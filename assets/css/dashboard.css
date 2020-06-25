@@ -1,0 +1,14 @@
+body{
+    color: white;
+}
+.container{
+    background-color: #212121;
+}
+.vertical-center {
+    top: 50%;
+    transform: translateY(15%);
+}
+
+.borderless{
+    border: none;
+}

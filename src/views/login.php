@@ -57,7 +57,7 @@
           $userDAO->addUser($_POST['username'], $_POST['password']);
         }
         $_SESSION['iduser'] = $userDAO->getUserId($_POST['username']);
-        header('Location: dash.php');
+        header('Location: dashboard.php');
       }
     }?>
     <div class="container center">
