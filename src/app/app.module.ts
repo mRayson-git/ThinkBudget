@@ -6,23 +6,18 @@ import { AppComponent } from './app.component';
 
 // Firebase
 import { environment } from '../environments/environment';
-import { provideFirebaseApp, getApp, initializeApp } from '@angular/fire/app';
-import { getFirestore, provideFirestore } from '@angular/fire/firestore';
-import { HomepageComponent } from './components/homepage/homepage.component';
-import { NavbarComponent } from './components/navbar/navbar.component';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { SharedModule } from './modules/shared/shared.module';
-import { Error404Component } from './components/error404/error404.component';
 import { AngularFireAuthModule } from '@angular/fire/compat/auth';
 import { AngularFireModule } from '@angular/fire/compat';
+import { CoreModule } from './modules/core/core.module';
+import { AuthModule } from './modules/auth/auth.module';
+import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 
 
 @NgModule({
   declarations: [
     AppComponent,
-    HomepageComponent,
-    NavbarComponent,
-    Error404Component
   ],
   imports: [
     BrowserModule,
@@ -30,7 +25,9 @@ import { AngularFireModule } from '@angular/fire/compat';
     AngularFireModule.initializeApp(environment.firebaseConfig),
     AngularFireAuthModule,
     BrowserAnimationsModule,
-    SharedModule
+    SharedModule,
+    CoreModule,
+    AuthModule
   ],
   providers: [],
   bootstrap: [AppComponent]
