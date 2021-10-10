@@ -11,9 +11,9 @@ export class ToastService {
     } else if (toast.type == 'success') {
       toast.classname = 'bg-success text-light';
     } else if (toast.type == 'info') {
-      toast.classname = 'bg-info text-light';
+      toast.classname = 'bg-info text-dark';
     } else if (toast.type == 'warn') {
-      toast.classname = 'bg-warn text-dark';
+      toast.classname = 'bg-warning text-dark';
     } else {
       toast.classname = 'bg-primary text-light';
     }

@@ -1,1 +1,49 @@
-<p>account-settings works!</p>
+<div class="card shadow-sm pastel">
+    <div class="card-body">
+        <h1 class="display-5">General Information</h1>
+        <div class="row">
+            <div class="col-sm-12 col-lg-4">
+                <form [formGroup]="accountForm" (ngSubmit)="updateAccount()">
+                    <label for="displayname">Username: </label>
+                    <input type="text" name="displayname" id="displayname" formControlName="displayname" class="form-control mb-3">
+                    <label for="email">Email: </label>
+                    <input type="text" name="email" id="email" formControlName="email" class="form-control mb-3">
+                    <div class="d-grid">
+                        <button class="btn btn-success" type="submit">Update Account Settings</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="card shadow-sm mt-5 pastel">
+    <div class="card-body">
+        <div class="d-flex justify-content-between">
+            <h1 class="display-5">Banking Information</h1>
+            <button class="btn" (click)="bankInfo()">
+                <svg class="bi text-success" width="32" height="32" fill="currentColor">
+                    <use xlink:href="assets/bootstrap-icons.svg#info-circle" />
+                </svg>
+            </button>
+        </div>
+        <div class="row">
+            <div class="col-sm-12 col-md-6">
+                <div *ngIf="parsers.length != 0">
+                    <p class="mb-2">Your csv parsing profiles:</p>
+                    <div class="list-group">
+                        <button *ngFor="let parser of parsers" class="list-group-item list-group-item-action" (click)="openParserUpdateDialog(parser)">{{parser.accountName}}</button>
+                    </div>
+                </div>
+                <div class="d-grid mt-3">
+                    <button class="btn btn-success" (click)="openParserDialog()">
+                        <svg class="bi" width="16" height="16" fill="currentColor">
+                            <use xlink:href="assets/bootstrap-icons.svg#plus" />
+                        </svg>
+                        Add a new parsing profile
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+

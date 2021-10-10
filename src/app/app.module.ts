@@ -13,6 +13,7 @@ import { AngularFireModule } from '@angular/fire/compat';
 import { CoreModule } from './modules/core/core.module';
 import { AuthModule } from './modules/auth/auth.module';
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
+import { AccountModule } from './modules/account/account.module';
 
 
 @NgModule({
@@ -27,7 +28,8 @@ import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
     BrowserAnimationsModule,
     SharedModule,
     CoreModule,
-    AuthModule
+    AuthModule,
+    AccountModule
   ],
   providers: [],
   bootstrap: [AppComponent]

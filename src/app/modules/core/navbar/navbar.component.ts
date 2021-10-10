@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { AngularFireAuth } from '@angular/fire/compat/auth';
+import { Router } from '@angular/router';
 import firebase from 'firebase/compat/app';
 import { ToastService } from 'src/app/services/toast.service';
 
@@ -10,7 +11,7 @@ import { ToastService } from 'src/app/services/toast.service';
 })
 export class NavbarComponent implements OnInit {
 
-  constructor(public auth: AngularFireAuth, private toastService: ToastService) { }
+  constructor(public auth: AngularFireAuth, private toastService: ToastService, private router: Router) { }
 
   ngOnInit(): void {
   }
@@ -21,6 +22,7 @@ export class NavbarComponent implements OnInit {
   logout() {
     this.auth.signOut();
     this.toastService.show({ type: "success", content: "Logged out!" });
+    this.router.navigate(['/login']);
   }
   
 
