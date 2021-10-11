@@ -12,8 +12,9 @@ import { AngularFireAuthModule } from '@angular/fire/compat/auth';
 import { AngularFireModule } from '@angular/fire/compat';
 import { CoreModule } from './modules/core/core.module';
 import { AuthModule } from './modules/auth/auth.module';
-import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 import { AccountModule } from './modules/account/account.module';
+import { TransactionsModule } from './modules/transactions/transactions.module';
+import { AngularFirestoreModule } from '@angular/fire/compat/firestore';
 
 
 @NgModule({
@@ -25,11 +26,13 @@ import { AccountModule } from './modules/account/account.module';
     AppRoutingModule,
     AngularFireModule.initializeApp(environment.firebaseConfig),
     AngularFireAuthModule,
+    AngularFirestoreModule.enablePersistence(),
     BrowserAnimationsModule,
     SharedModule,
     CoreModule,
     AuthModule,
-    AccountModule
+    AccountModule,
+    TransactionsModule
   ],
   providers: [],
   bootstrap: [AppComponent]
