@@ -18,7 +18,6 @@ export class CsvProfileService {
       this.parserCollection = afs.collection<Parser>(user?.uid + '/resources/parsers');
       this.parsers$ = this.parserCollection.valueChanges();
     });
-    
   }
 
   saveParser(parser: Parser): void {
@@ -28,7 +27,7 @@ export class CsvProfileService {
       parser.id = res.id;
       this.parserCollection.doc(res.id).set(parser, {merge: true});
     })
-    .catch(error => this.toastService.show({ type: 'danger', content: `Could not add toast: ${error}` }));
+    .catch(error => this.toastService.show({ type: 'danger', content: `Could not add parser: ${error}` }));
   }
 
   updateParser(parser: Parser): void {

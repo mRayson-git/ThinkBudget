@@ -1,0 +1,86 @@
+<div class="card pastel shadow">
+    <div class="card-body">
+        <div class="d-flex justify-content-between">
+            <h1 class="display-5">Import Transactions</h1>
+            <button class="btn" (click)="transInfo()">
+                <svg class="bi text-success" width="32" height="32" fill="currentColor">
+                    <use xlink:href="assets/bootstrap-icons.svg#info-circle" />
+                </svg>
+            </button>
+        </div>
+        <form [formGroup]="transImportForm" (ngSubmit)="import()">
+            <div class="row">
+                <div class="col-sm-12 col-md-6">
+                    <label for="parser">Select Your CSVParser</label>
+                    <select name="parser" id="parser" class="form-select" formControlName="parser">
+                        <option *ngFor="let parser of parsers" value={{parser.accountName}}>{{parser.accountName}}</option>
+                    </select>
+                    <label for="file">Select CSV</label>
+                    <input type="file" accept=".csv" class="form-control" name="file" id="file" formControlName="file" (change)="fileChanged($event)">
+                    <div class="d-grid mt-3">
+                        <button type="submit" class="btn btn-success">Import</button>
+                    </div>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+<div class="card pastel shadow mt-3">
+    <div class="card-body">
+        <form [formGroup]="sortForm" (ngSubmit)="filterTransactions()">
+            <div class="row">
+                <div class="col">
+                    <label for="limit">Limit</label>
+                    <input type="number" name="limit" id="limit" class="form-control" formControlName="limit">
+                </div>
+                <div class="col">
+                    <label for="Amount">Amount</label>
+                    <input type="number" name="amount" id="amount" class="form-control" formControlName="amount" readonly>
+                </div>
+                <div class="col">
+                    <label for="Amount">Payee</label>
+                    <input type="text" name="payee" id="payee" class="form-control" formControlName="payee" readonly>
+                </div>
+                <div class="col d-flex justify-content-end gap-2">
+                    <button type="button" class="btn btn-success" (click)="addCustomTransaction()">
+                        <svg class="bi text-light" width="24" height="24" fill="currentColor">
+                            <use xlink:href="assets/bootstrap-icons.svg#plus" />
+                        </svg>
+                    </button>
+                    <button type="submit" class="btn btn-success">
+                        <svg class="bi text-light" width="24" height="24" fill="currentColor">
+                            <use xlink:href="assets/bootstrap-icons.svg#search" />
+                        </svg>
+                    </button>
+                </div>
+            </div>
+        </form>
+        <div style="overflow-x: scroll;">
+            <table class="table table-hover table-striped">
+                <thead>
+                    <tr>
+                        <th>Account</th>
+                        <th>Amount</th>
+                        <th>Payee</th>
+                        <th>Description</th>
+                        <th>Date</th>
+                        <th>Category</th>
+                        <th>Notes</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr *ngFor="let trans of transactions" (click)="openTransUpdateDialog(trans)">
+                        <td>{{trans.bankAccountName}}</td>
+                        <td *ngIf="trans.transAmount < 0; else black" class="text-danger">{{trans.transAmount | currency}}</td>
+                        <ng-template #black><td>{{trans.transAmount | currency}}</td></ng-template>
+                        <td>{{trans.transPayee}}</td>
+                        <td>{{trans.transType}}</td>
+                        <td>{{trans.transDate.toDate() | date}}</td>
+                        <td></td>
+                        <td></td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
