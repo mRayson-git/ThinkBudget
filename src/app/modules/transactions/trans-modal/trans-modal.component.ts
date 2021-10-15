@@ -80,7 +80,7 @@ export class TransModalComponent implements OnInit {
       transCategory: this.transForm.get('transCategory')?.value || '',
       transNote: this.transForm.get('transNote')?.value || ''
     }
-    this.transactionService.saveTransaction(transaction);
+    this.transactionService.createTransaction(transaction);
     this.modalService.dismissAll();
   }
 

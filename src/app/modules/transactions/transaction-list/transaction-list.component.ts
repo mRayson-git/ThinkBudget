@@ -43,6 +43,7 @@ export class TransactionListComponent implements OnInit {
     this.transactionService.transactions$.subscribe(result => this.transactions = result);
     this.transactionService.history$.subscribe(content => console.log(content));
     this.budgetService.budget$.subscribe(content => this.budgets = content);
+    this.transactionService.getMostRecent('PCFinancial');
   }
 
   transInfo(): void {
@@ -60,13 +61,13 @@ export class TransactionListComponent implements OnInit {
     fileReader.readAsText(this.file);
   }
 
-  parseTransactions(data: string, parser: Parser): void {
+  async parseTransactions(data: string, parser: Parser): Promise<void> {
     let transactions: Transaction[] = [];
     try{
       data.split('\n').forEach((row, index) => {
         if (!parser.hasHeader || parser.hasHeader && index != 0) {
           const temp = row.split(',');
-          if (temp[parser.dateCol-1] != undefined){
+          if (temp[0] != ""){
             console.log(temp);
             const transaction: Transaction = {
               bankAccountName: parser.accountName,
@@ -83,9 +84,7 @@ export class TransactionListComponent implements OnInit {
     } catch (error) {
       console.error(error);
     }
-    transactions.forEach(transaction => {
-      this.transactionService.saveTransaction(transaction);
-    });
+    this.transactionService.batchSave(transactions);
   }
 
   filterTransactions(): void {
