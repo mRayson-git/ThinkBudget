@@ -69,9 +69,9 @@
                     </thead>
                     <tbody>
                         <tr *ngFor="let budget of budgets" (click)="editBudget(budget)">
-                            <td>{{budget.categoryName}}</td>
-                            <td>{{budget.budgetAmount | currency}}</td>
-                            <td [style.background]="budget.budgetColour"></td>
+                            <td *ngIf="budget.tracked">{{budget.categoryName}}</td>
+                            <td *ngIf="budget.tracked">{{budget.budgetAmount | currency}}</td>
+                            <td [style.background]="budget.budgetColour" *ngIf="budget.tracked"></td>
                         </tr>
                     </tbody>
                 </table>

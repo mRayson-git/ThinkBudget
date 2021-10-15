@@ -28,7 +28,7 @@
             </div>
             <div class="col-sm-12 col-md-6">
                 <label for="transCategory">Category</label>
-                <select name="transCategory" id="transCategory" class="form-select">
+                <select name="transCategory" id="transCategory" class="form-select" formControlName="transCategory">
                     <option value="">Select a category</option>
                     <option *ngFor="let category of categories">{{category}}</option>
                 </select>

@@ -12,6 +12,7 @@ import { BudgetService } from 'src/app/services/budget.service';
 export class BudgetModalComponent implements OnInit {
   @Input() budget!: Budget;
   budgetForm: FormGroup = new FormGroup({
+    tracked: new FormControl('', Validators.required),
     categoryName: new FormControl('', Validators.required),
     budgetAmount: new FormControl('', Validators.required),
     budgetColour: new FormControl('', Validators.required)
@@ -20,6 +21,7 @@ export class BudgetModalComponent implements OnInit {
   constructor(private budgetService: BudgetService, private modalService: NgbModal) { }
 
   ngOnInit(): void {
+    this.budgetForm.get('tracked')?.setValue(this.budget.tracked);
     this.budgetForm.get('categoryName')?.setValue(this.budget.categoryName);
     this.budgetForm.get('budgetAmount')?.setValue(this.budget.budgetAmount);
     this.budgetForm.get('budgetColour')?.setValue(this.budget.budgetColour);

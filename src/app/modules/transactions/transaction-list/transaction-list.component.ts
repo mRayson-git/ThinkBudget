@@ -67,13 +67,14 @@ export class TransactionListComponent implements OnInit {
         if (!parser.hasHeader || parser.hasHeader && index != 0) {
           const temp = row.split(',');
           if (temp[parser.dateCol-1] != undefined){
+            console.log(temp);
             const transaction: Transaction = {
               bankAccountName: parser.accountName,
               bankAccountType: parser.accountType,
               transAmount: Number(this.cleanString(temp[parser.amountCol-1])) || 0,
               transDate: Timestamp.fromDate(new Date(this.cleanString(temp[parser.dateCol-1]))),
-              transPayee: this.cleanString(temp[parser.payeeCol-1]) || 'unknown',
-              transType: this.cleanString(temp[parser.typeCol-1]) || 'unknown'
+              transPayee: this.cleanString(temp[parser.payeeCol-1]) || '',
+              transType: this.cleanString(temp[parser.typeCol-1]) || ''
             }
             transactions.push(transaction);
           }
@@ -83,8 +84,6 @@ export class TransactionListComponent implements OnInit {
       console.error(error);
     }
     transactions.forEach(transaction => {
-      console.log('Saving transactions');
-      console.log(transaction.transDate);
       this.transactionService.saveTransaction(transaction);
     });
   }
@@ -95,6 +94,7 @@ export class TransactionListComponent implements OnInit {
 
   cleanString(string: string): string {
     if (string) {
+      string = string.split('$').join('');
       string = string.split('"').join('');
       return string.trim();
     }

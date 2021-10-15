@@ -73,10 +73,11 @@
                         <td>{{trans.bankAccountName}}</td>
                         <td *ngIf="trans.transAmount < 0; else black" class="text-danger">{{trans.transAmount | currency}}</td>
                         <ng-template #black><td>{{trans.transAmount | currency}}</td></ng-template>
-                        <td>{{trans.transPayee}}</td>
-                        <td>{{trans.transType}}</td>
+                        <td>{{trans.transPayee | uppercase}}</td>
+                        <td>{{trans.transType | uppercase}}</td>
                         <td>{{trans.transDate.toDate() | date}}</td>
-                        <td></td>
+                        <td *ngIf="trans.transCategory; else noCat">{{trans.transCategory}}</td>
+                        <ng-template #noCat><td></td></ng-template>
                         <td *ngIf="trans.transNote; else noNote" class="text-center">
                             <svg class="bi text-success" width="24" height="24" fill="currentColor">
                                 <use xlink:href="assets/bootstrap-icons.svg#envelope-fill" />

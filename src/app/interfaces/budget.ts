@@ -3,4 +3,5 @@ export interface Budget {
     categoryName: string,
     budgetAmount: number,
     budgetColour: string,
+    tracked?: boolean,
 }

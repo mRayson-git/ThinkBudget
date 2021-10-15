@@ -16,6 +16,7 @@ export class BudgetCreatorComponent implements OnInit {
     categoryName: new FormControl('', Validators.required)
   });
   budgetForm: FormGroup = new FormGroup({
+    tracked: new FormControl(true),
     categoryName: new FormControl('', Validators.required),
     budgetAmount: new FormControl('', Validators.required),
     budgetColour: new FormControl('', Validators.required)
@@ -34,6 +35,17 @@ export class BudgetCreatorComponent implements OnInit {
   ngOnInit(): void {
     this.budgetService.budget$.subscribe(budgets => {
       this.budgets = budgets;
+      this.budgets.sort((a, b) => {
+        if (a.categoryName.toUpperCase() < b.categoryName.toUpperCase()) {
+          return -1;
+        }
+        else if (a.categoryName.toUpperCase() > b.categoryName.toUpperCase()) {
+          return 1;
+        }
+        else {
+          return 0;
+        }
+      });
       this.budgets.forEach(budget => {
         if (this.categories.find(name => name == budget.categoryName) == undefined){
           this.categories.push(budget.categoryName);
@@ -49,6 +61,7 @@ export class BudgetCreatorComponent implements OnInit {
   }
 
   addBudget(): void {
+    console.log(this.budgetForm.value);
     this.budgetService.addBudget(this.budgetForm.value);
     this.budgetForm.reset();
   }

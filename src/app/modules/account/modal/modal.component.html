@@ -7,11 +7,12 @@
             <label class="form-check-label" for="hasHeader">
                 Header
             </label>
-          </div>
+        </div>
         <div class="row">
             <div class="col-sm-12 col-md-6">
                 <label for="accountName">Account Name</label>
-                <input type="text" class="form-control" name="accountName" id="accountName" formControlName="accountName">
+                <input type="text" class="form-control" name="accountName" id="accountName"
+                    formControlName="accountName">
             </div>
             <div class="col-sm-12 col-md-6">
                 <label for="accountType">Account Type</label>
@@ -43,10 +44,13 @@
             </div>
         </div>
         <div class="d-grid gap-2 mt-3">
-            <button class="btn btn-success" type="submit" [disabled]="parserForm.invalid" *ngIf="parser; else adding">Update Parser</button>
-            <button class="btn btn-danger" type="button" [disabled]="parserForm.invalid" *ngIf="parser" (click)="deleteParser()">Delete Parser</button>
-            <ng-template #adding><button class="btn btn-success" type="submit" [disabled]="parserForm.invalid">Add Parser</button></ng-template>
+            <button class="btn btn-success" type="submit" [disabled]="parserForm.invalid"
+                *ngIf="parser; else adding">Update Parser</button>
+            <button class="btn btn-danger" type="button" [disabled]="parserForm.invalid" *ngIf="parser"
+                (click)="deleteParser()">Delete Parser</button>
+            <ng-template #adding><button class="btn btn-success" type="submit" [disabled]="parserForm.invalid">Add
+                    Parser</button></ng-template>
         </div>
     </form>
-    
+
 </div>

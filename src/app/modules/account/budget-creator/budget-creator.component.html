@@ -18,13 +18,22 @@
                         <button type="submit" class="btn btn-success" [disabled]="categoryNameForm.invalid">Add category name</button>
                     </div>
                 </form>
+                <hr>
+                <h2 class="my-3">Budget Properties</h2>
                 <form [formGroup]="budgetForm" class="mt-3" (ngSubmit)="addBudget()">
+                    <div class="form-check mb-3">
+                        <input class="form-check-input" type="checkbox" value="" id="tracked" formControlName="tracked">
+                        <label class="form-check-label" for="tracked">
+                            Tracked?
+                        </label>
+                    </div>
                     <label for="categoryName">Category Name</label>
                     <select name="categoryName" id="categoryName" class="form-select" formControlName="categoryName">
                         <option value="">Select a category</option>
                         <option *ngFor="let cat of categories">{{cat}}</option>
                     </select>
-                    <label for="budgetAmount">Budgeted Amount</label>
+                    <label for="budgetAmount" *ngIf="budgetForm.get('tracked')!.value == true; else untracked">Budgeted Amount</label>
+                    <ng-template #untracked><label for="budgetAmount">Estimated Amount</label></ng-template>
                     <input type="number" name="budgetAmount" id="budgetAmount" formControlName="budgetAmount" class="form-control">
                     <label for="budgetColour">Category Color</label>
                     <input type="color" name="budgetCOlour" id="budgetColour" formControlName="budgetColour" class="form-control form-control-lg" value="#42f5b6">
@@ -38,6 +47,7 @@
                 </form>
             </div>
             <div class="col-sm-12 col-md-6 overflow-auto">
+                <h3>Tracked Budgets</h3>
                 <table class="table table-hover">
                     <thead>
                         <tr>
@@ -48,9 +58,26 @@
                     </thead>
                     <tbody>
                         <tr *ngFor="let budget of budgets" (click)="editBudget(budget)">
-                            <td>{{budget.categoryName}}</td>
-                            <td>{{budget.budgetAmount | currency}}</td>
-                            <td [style.background]="budget.budgetColour"></td>
+                            <td *ngIf="budget.tracked">{{budget.categoryName}}</td>
+                            <td *ngIf="budget.tracked">{{budget.budgetAmount | currency}}</td>
+                            <td [style.background]="budget.budgetColour" *ngIf="budget.tracked"></td>
+                        </tr>
+                    </tbody>
+                </table>
+                <h3>Untracked Budgets</h3>
+                <table class="table table-hover">
+                    <thead>
+                        <tr>
+                            <td>Category</td>
+                            <td>Budget</td>
+                            <td>Colour</td>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr *ngFor="let budget of budgets" (click)="editBudget(budget)">
+                            <td *ngIf="!budget.tracked">{{budget.categoryName}}</td>
+                            <td *ngIf="!budget.tracked">{{budget.budgetAmount | currency}}</td>
+                            <td [style.background]="budget.budgetColour" *ngIf="!budget.tracked"></td>
                         </tr>
                     </tbody>
                 </table>
