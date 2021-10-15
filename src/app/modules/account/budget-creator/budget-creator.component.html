@@ -1,0 +1,60 @@
+<div class="card shadow pastel">
+    <div class="card-body">
+        <div class="d-flex justify-content-between">
+            <h1 class="display-5">Budget Creator</h1>
+            <button class="btn" (click)="budgetInfo()">
+                <svg class="bi text-success" width="32" height="32" fill="currentColor">
+                    <use xlink:href="assets/bootstrap-icons.svg#info-circle" />
+                </svg>
+            </button>
+        </div>
+        <p>Here is where you can create/update your budget:</p>
+        <div class="row">
+            <div class="col-sm-12 col-md-6">
+                <form [formGroup]="categoryNameForm" (ngSubmit)="addCatName()">
+                    <label for="categoryName">Category Name</label>
+                    <input type="text" class="form-control" id="categoryName" name="categoryName" formControlName="categoryName">
+                    <div class="d-grid mt-3">
+                        <button type="submit" class="btn btn-success" [disabled]="categoryNameForm.invalid">Add category name</button>
+                    </div>
+                </form>
+                <form [formGroup]="budgetForm" class="mt-3" (ngSubmit)="addBudget()">
+                    <label for="categoryName">Category Name</label>
+                    <select name="categoryName" id="categoryName" class="form-select" formControlName="categoryName">
+                        <option value="">Select a category</option>
+                        <option *ngFor="let cat of categories">{{cat}}</option>
+                    </select>
+                    <label for="budgetAmount">Budgeted Amount</label>
+                    <input type="number" name="budgetAmount" id="budgetAmount" formControlName="budgetAmount" class="form-control">
+                    <label for="budgetColour">Category Color</label>
+                    <input type="color" name="budgetCOlour" id="budgetColour" formControlName="budgetColour" class="form-control form-control-lg" value="#42f5b6">
+                    <div class="d-grid mt-3">
+                        <button type="submit" class="btn btn-success" [disabled]="budgetForm.invalid">
+                            <svg class="bi" width="32" height="32" fill="currentColor">
+                                <use xlink:href="assets/bootstrap-icons.svg#plus-circle" />
+                            </svg>
+                        </button>
+                    </div>
+                </form>
+            </div>
+            <div class="col-sm-12 col-md-6 overflow-auto">
+                <table class="table table-hover">
+                    <thead>
+                        <tr>
+                            <td>Category</td>
+                            <td>Budget</td>
+                            <td>Colour</td>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr *ngFor="let budget of budgets" (click)="editBudget(budget)">
+                            <td>{{budget.categoryName}}</td>
+                            <td>{{budget.budgetAmount | currency}}</td>
+                            <td [style.background]="budget.budgetColour"></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>

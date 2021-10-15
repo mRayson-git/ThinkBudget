@@ -46,4 +46,45 @@
         </div>
     </div>
 </div>
+<div class="card shadow-sm mt-5 pastel">
+    <div class="card-body">
+        <div class="d-flex justify-content-between">
+            <h1 class="display-5">Budget</h1>
+            <button class="btn" (click)="budgetInfo()">
+                <svg class="bi text-success" width="32" height="32" fill="currentColor">
+                    <use xlink:href="assets/bootstrap-icons.svg#info-circle" />
+                </svg>
+            </button>
+        </div>
+        <div *ngIf="budgets!.length != 0; else noBudget">
+            <div class="col-sm-12 col-md-6">
+                <p>This is your current buget:</p>
+                <table class="table table-hover">
+                    <thead>
+                        <tr>
+                            <td>Category</td>
+                            <td>Budget</td>
+                            <td>Colour</td>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr *ngFor="let budget of budgets" (click)="editBudget(budget)">
+                            <td>{{budget.categoryName}}</td>
+                            <td>{{budget.budgetAmount | currency}}</td>
+                            <td [style.background]="budget.budgetColour"></td>
+                        </tr>
+                    </tbody>
+                </table>
+                <div class="d-grid">
+                    <button type="button" class="btn btn-success" routerLink="../budget-creator">Update Budget</button>
+                </div>
+                
+            </div>
+        </div>
+        <ng-template #noBudget>
+            <p>You dont seem to have a budget, create one here:</p>
+            <button class="btn btn-success" type="button" routerLink="../budget-creator">Create new budget</button>
+        </ng-template>
+    </div>
+</div>
 

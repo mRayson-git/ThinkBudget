@@ -18,14 +18,7 @@ export class TransactionService {
   transactionCollection!: AngularFirestoreCollection<Transaction>;
 
   constructor(private afs: AngularFirestore, private auth: AngularFireAuth, private toastService: ToastService) {
-    this.history$ = new Subject<string>();
-    this.auth.currentUser.then(user => {
-      this.limitFilter$ = new BehaviorSubject(20);
-      this.transactions$ = this.limitFilter$.pipe(
-        switchMap(limit => afs.collection<Transaction>(user?.uid + '/resources/transactions', ref => ref.orderBy('transDate', 'desc').limit(limit)).valueChanges()
-      ));
-      this.transactionCollection = afs.collection<Transaction>(user?.uid + '/resources/transactions');
-    });
+    
   }
 
   saveTransaction(transaction: Transaction): void {
@@ -71,5 +64,16 @@ export class TransactionService {
 
   getTransactionsWithLimit(limit: number): void {
     this.limitFilter$?.next(limit);
+  }
+
+  init(): void {
+    this.history$ = new Subject<string>();
+    this.auth.currentUser.then(user => {
+      this.limitFilter$ = new BehaviorSubject(20);
+      this.transactions$ = this.limitFilter$.pipe(
+        switchMap(limit => this.afs.collection<Transaction>(user?.uid + '/resources/transactions', ref => ref.orderBy('transDate', 'desc').limit(limit)).valueChanges()
+      ));
+      this.transactionCollection = this.afs.collection<Transaction>(user?.uid + '/resources/transactions');
+    });
   }
 }

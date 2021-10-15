@@ -2,9 +2,12 @@ import { Component, OnInit } from '@angular/core';
 import { AngularFireAuth } from '@angular/fire/compat/auth';
 import { FormControl, FormGroup } from '@angular/forms';
 import { NgbModal, ModalDismissReasons } from '@ng-bootstrap/ng-bootstrap';
+import { Budget } from 'src/app/interfaces/budget';
 import { Parser } from 'src/app/interfaces/parser';
+import { BudgetService } from 'src/app/services/budget.service';
 import { CsvProfileService } from 'src/app/services/csv-profile.service';
 import { ToastService } from 'src/app/services/toast.service';
+import { BudgetModalComponent } from '../budget-modal/budget-modal.component';
 import { ModalComponent } from '../modal/modal.component';
 
 @Component({
@@ -18,12 +21,13 @@ export class AccountSettingsComponent implements OnInit {
     email: new FormControl(''),
   });
   parsers: Parser[] = [];
-  
+  budgets?: Budget[] = [];
 
   constructor(public auth: AngularFireAuth,
     public toastService: ToastService,
     public modalService: NgbModal,
-    public csvPS: CsvProfileService) { }
+    public csvPS: CsvProfileService,
+    public budgetService: BudgetService) { }
 
   ngOnInit(): void {
     this.auth.currentUser.then(user => {
@@ -33,6 +37,9 @@ export class AccountSettingsComponent implements OnInit {
     });
     this.csvPS.parsers$.subscribe(result => {
       this.parsers = result;
+    });
+    this.budgetService.budget$.subscribe(result => {
+      this.budgets = result;
     });
   }
 
@@ -51,6 +58,10 @@ export class AccountSettingsComponent implements OnInit {
     this.toastService.show({ type: 'info', content: 'This is where you set your profiles to let ThinkBudget know how to handle your financial records', delay: 10000 });
   }
 
+  budgetInfo(): void{
+    this.toastService.show({ type: 'info', content: 'This is where your current budget lives', delay: 10000 });
+  }
+
   openParserDialog(): void {
     const modalRef = this.modalService.open(ModalComponent, { centered: true, size: 'lg' });
   }
@@ -58,5 +69,10 @@ export class AccountSettingsComponent implements OnInit {
   openParserUpdateDialog(parser: Parser): void {
     const modalRef = this.modalService.open(ModalComponent, { centered: true, size: 'lg' });
     modalRef.componentInstance.parser = parser;
+  }
+
+  editBudget(budget: Budget): void {
+    const modalRef = this.modalService.open(BudgetModalComponent, { centered: true, size: 'lg' });
+    modalRef.componentInstance.budget = budget;
   }
 }

@@ -77,7 +77,12 @@
                         <td>{{trans.transType}}</td>
                         <td>{{trans.transDate.toDate() | date}}</td>
                         <td></td>
-                        <td></td>
+                        <td *ngIf="trans.transNote; else noNote" class="text-center">
+                            <svg class="bi text-success" width="24" height="24" fill="currentColor">
+                                <use xlink:href="assets/bootstrap-icons.svg#envelope-fill" />
+                            </svg>
+                        </td>
+                        <ng-template #noNote><td></td></ng-template>
                     </tr>
                 </tbody>
             </table>
