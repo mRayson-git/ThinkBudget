@@ -39,7 +39,7 @@ export class TransactionService {
           if (transaction.transDate > mostRecent!.transDate) {
             this.transactionCollection.add(transaction);
           } else {
-            console.warn("Requires manual addition");
+            console.warn(transaction + " Requires manual addition");
           }
         });
       }
