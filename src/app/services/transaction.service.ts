@@ -3,7 +3,7 @@ import { Injectable } from '@angular/core';
 import { AngularFireAuth } from '@angular/fire/compat/auth';
 import { AngularFirestore, AngularFirestoreCollection, AngularFirestoreDocument } from '@angular/fire/compat/firestore';
 import firebase from 'firebase/compat';
-import { OrderByDirection } from 'firebase/firestore';
+import { OrderByDirection, WriteBatch } from 'firebase/firestore';
 import { BehaviorSubject, combineLatest, Observable, Subject } from 'rxjs';
 import { switchMap } from 'rxjs/operators';
 import { Transaction } from '../interfaces/transaction';
@@ -23,8 +23,8 @@ export class TransactionService {
 
   }
 
+  // Configure to use writeBatch and custom uuids
   batchSave(transactions: Transaction[]): void {
-    console.log("Batch save in progress");
     this.getMostRecent(transactions[0].bankAccountName).get().subscribe(data => {
       let mostRecent = data.docs.pop()?.data();
       if (mostRecent == null) {
