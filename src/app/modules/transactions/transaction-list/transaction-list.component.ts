@@ -41,7 +41,6 @@ export class TransactionListComponent implements OnInit {
   ngOnInit(): void {
     this.csvPS.parsers$.subscribe(result => this.parsers = result);
     this.transactionService.transactions$.subscribe(result => this.transactions = result);
-    this.transactionService.history$.subscribe(content => console.log(content));
     this.budgetService.budget$.subscribe(content => this.budgets = content);
     this.transactionService.getMostRecent('PCFinancial');
   }

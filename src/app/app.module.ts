@@ -15,6 +15,7 @@ import { AuthModule } from './modules/auth/auth.module';
 import { AccountModule } from './modules/account/account.module';
 import { TransactionsModule } from './modules/transactions/transactions.module';
 import { AngularFirestoreModule } from '@angular/fire/compat/firestore';
+import { BudgetModule } from './modules/budget/budget.module';
 
 
 @NgModule({
@@ -32,7 +33,8 @@ import { AngularFirestoreModule } from '@angular/fire/compat/firestore';
     CoreModule,
     AuthModule,
     AccountModule,
-    TransactionsModule
+    TransactionsModule,
+    BudgetModule
   ],
   providers: [],
   bootstrap: [AppComponent]

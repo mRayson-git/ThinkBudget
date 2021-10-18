@@ -3,7 +3,7 @@ import { Injectable } from '@angular/core';
 import { AngularFireAuth } from '@angular/fire/compat/auth';
 import { AngularFirestore, AngularFirestoreCollection, AngularFirestoreDocument } from '@angular/fire/compat/firestore';
 import firebase from 'firebase/compat';
-import { OrderByDirection, WriteBatch } from 'firebase/firestore';
+import { OrderByDirection, Timestamp, WriteBatch } from 'firebase/firestore';
 import { BehaviorSubject, combineLatest, Observable, Subject } from 'rxjs';
 import { switchMap } from 'rxjs/operators';
 import { Transaction } from '../interfaces/transaction';
@@ -14,9 +14,12 @@ import { ToastService } from './toast.service';
 })
 export class TransactionService {
   transactions$!: Observable<Transaction[]>;
-  history$!: Subject<string>;
-  limitFilter$?: BehaviorSubject<number>;
   transactionCollection!: AngularFirestoreCollection<Transaction>;
+
+  monthlyTransactions$!: Observable<Transaction[]>;
+  monthlyTransactionCollection!: AngularFirestoreCollection<Transaction>;
+
+  limitFilter$?: BehaviorSubject<number>;
   currentUser!: firebase.User;
 
   constructor(private afs: AngularFirestore, private auth: AngularFireAuth, private toastService: ToastService) {
@@ -52,7 +55,7 @@ export class TransactionService {
         transaction.id = res.id;
         this.transactionCollection.doc(res.id).set(transaction, { merge: true });
       })
-      .catch(error => this.toastService.show({type: 'danger', content: `Could not create transaction: ${error}`}));
+      .catch(error => this.toastService.show({ type: 'danger', content: `Could not create transaction: ${error}` }));
   }
 
   updateTransaction(transaction: Transaction): void {
@@ -74,10 +77,10 @@ export class TransactionService {
   }
 
   init(): void {
-    this.history$ = new Subject<string>();
     this.auth.currentUser.then(user => {
       this.currentUser = user!;
       this.limitFilter$ = new BehaviorSubject(5);
+      // Setup for transactions on transaction overview page
       this.transactions$ = this.limitFilter$.pipe(
         switchMap(limit => this.afs.collection<Transaction>(user?.uid + '/resources/transactions', ref => ref.orderBy('transDate', 'desc').limit(limit)).valueChanges()
         ));
@@ -90,5 +93,16 @@ export class TransactionService {
       .where('bankAccountName', '==', bankAccountName)
       .orderBy('transDate', 'desc')
       .limit(1));
+  }
+
+  getMonthlyTransactions(): Transaction[] {
+    let currDate = new Date();
+    let transactions: Transaction[] = [];
+    this.afs.collection<Transaction>(this.currentUser?.uid + '/resources/transactions', ref => ref
+      .where('transDate', ">=", Timestamp.fromDate(new Date(currDate.getFullYear(), currDate.getMonth())))
+    ).get().subscribe(data => {
+      data.forEach(transaction => transactions.push(transaction.data()))
+    });
+    return transactions;
   }
 }
