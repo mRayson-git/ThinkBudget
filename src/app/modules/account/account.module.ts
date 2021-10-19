@@ -9,7 +9,7 @@ import { ModalComponent } from './modal/modal.component';
 @NgModule({
   declarations: [
     AccountSettingsComponent,
-    ModalComponent
+    ModalComponent,
   ],
   imports: [
     CommonModule,

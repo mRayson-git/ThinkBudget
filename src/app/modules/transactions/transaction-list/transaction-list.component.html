@@ -13,6 +13,7 @@
                 <div class="col-sm-12 col-md-6">
                     <label for="parser">Select Your CSVParser</label>
                     <select name="parser" id="parser" class="form-select" formControlName="parser">
+                        <option value="">Select a Parser</option>
                         <option *ngFor="let parser of parsers" value={{parser.accountName}}>{{parser.accountName}}</option>
                     </select>
                     <label for="file">Select CSV</label>
@@ -70,14 +71,20 @@
                 </thead>
                 <tbody>
                     <tr *ngFor="let trans of transactions" (click)="openTransUpdateDialog(trans)">
-                        <td>{{trans.bankAccountName}}</td>
-                        <td *ngIf="trans.transAmount < 0; else black" class="text-danger">{{trans.transAmount | currency}}</td>
-                        <ng-template #black><td>{{trans.transAmount | currency}}</td></ng-template>
-                        <td>{{trans.transPayee}}</td>
-                        <td>{{trans.transType}}</td>
-                        <td>{{trans.transDate.toDate() | date}}</td>
-                        <td></td>
-                        <td></td>
+                        <td class="align-middle">{{trans.bankAccountName}}</td>
+                        <td *ngIf="trans.transAmount < 0; else black" class="text-danger align-middle">{{trans.transAmount | currency}}</td>
+                        <ng-template #black><td class="align-middle">{{trans.transAmount | currency}}</td></ng-template>
+                        <td class="align-middle">{{trans.transPayee | uppercase}}</td>
+                        <td class="align-middle">{{trans.transType | uppercase}}</td>
+                        <td class="align-middle">{{trans.transDate.toDate() | date}}</td>
+                        <td *ngIf="trans.transCategory; else noCat" class="align-middle">{{trans.transCategory | uppercase}}</td>
+                        <ng-template #noCat><td class="align-middle"></td></ng-template>
+                        <td *ngIf="trans.transNote; else noNote" class="text-center align-middle">
+                            <svg class="bi text-success" width="24" height="24" fill="currentColor">
+                                <use xlink:href="assets/bootstrap-icons.svg#sticky" />
+                            </svg>
+                        </td>
+                        <ng-template #noNote><td></td></ng-template>
                     </tr>
                 </tbody>
             </table>

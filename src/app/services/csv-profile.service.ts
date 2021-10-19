@@ -11,13 +11,10 @@ import { ToastService } from './toast.service';
 export class CsvProfileService {
   parsers$ = new Observable<Parser[]>();
 
-  private parserCollection!: AngularFirestoreCollection<Parser>;
+  parserCollection!: AngularFirestoreCollection<Parser>;
 
   constructor(private afs: AngularFirestore, private auth: AngularFireAuth, private toastService: ToastService) {
-    this.auth.currentUser.then(user => {
-      this.parserCollection = afs.collection<Parser>(user?.uid + '/resources/parsers');
-      this.parsers$ = this.parserCollection.valueChanges();
-    });
+    
   }
 
   saveParser(parser: Parser): void {
@@ -40,5 +37,12 @@ export class CsvProfileService {
     this.parserCollection.doc(parser.id).delete()
     .then(res => this.toastService.show({type: 'success', content: 'Parsing profile has been deleted'}))
     .catch(err => this.toastService.show({type: 'danger', content: `Could not delete parser: ${err}`}))
+  }
+
+  init(): void {
+    this.auth.currentUser.then(user => {
+      this.parserCollection = this.afs.collection<Parser>(user?.uid + '/resources/parsers', ref => ref.orderBy('accountName', 'asc'));
+      this.parsers$ = this.parserCollection.valueChanges();
+    });
   }
 }

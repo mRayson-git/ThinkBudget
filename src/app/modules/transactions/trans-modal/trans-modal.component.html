@@ -28,15 +28,16 @@
             </div>
             <div class="col-sm-12 col-md-6">
                 <label for="transCategory">Category</label>
-                <select name="transCategory" id="transCategory" class="form-select">
-
+                <select name="transCategory" id="transCategory" class="form-select" formControlName="transCategory">
+                    <option value="">Select a category</option>
+                    <option *ngFor="let category of categories">{{category}}</option>
                 </select>
             </div>
         </div>
         <div class="row">
             <div class="col">
                 <label for="transNote">Notes</label>
-                <textarea name="transNote" id="transNote" cols="30" rows="10" class="form-control"></textarea>
+                <textarea name="transNote" id="transNote" cols="30" rows="10" class="form-control" formControlName="transNote"></textarea>
             </div>
         </div>
         <div class="row">

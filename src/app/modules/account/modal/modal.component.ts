@@ -14,10 +14,10 @@ export class ModalComponent implements OnInit {
     hasHeader: new FormControl(true),
     accountName: new FormControl('', Validators.required),
     accountType: new FormControl('', Validators.required),
-    dateCol: new FormControl('', Validators.required),
-    amountCol: new FormControl('', Validators.required),
-    payeeCol: new FormControl('', Validators.required),
-    typeCol: new FormControl('', Validators.required)
+    dateCol: new FormControl(''),
+    amountCol: new FormControl(''),
+    payeeCol: new FormControl(''),
+    typeCol: new FormControl('')
   });
   constructor(public modalService: NgbModal, public csvPS: CsvProfileService) { }
   @Input() parser?: Parser;
