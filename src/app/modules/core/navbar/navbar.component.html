@@ -1,0 +1,29 @@
+<nav class="navbar navbar-expand-lg navbar-light bg-success shadow-lg">
+  <div class="container">
+    <a class="navbar-brand fs-3" routerLink='/'>thinkbudget</a>
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNavAltMarkup"
+      aria-controls="navbarNavAltMarkup" aria-expanded="false" aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
+      <div class="navbar-nav">
+        <a class="nav-link" routerLink="/">Home</a>
+        <a class="nav-link" *ngIf="auth.user | async as user" routerLink="/budget">Budget</a>
+        <div *ngIf="auth.user | async as user; else showLogin" class="nav-item dropdown">
+          <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink" role="button"
+            data-bs-toggle="dropdown" aria-expanded="false">
+            Account
+          </a>
+          <ul class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
+            <li><a class="dropdown-item" routerLink="/account/settings">Account Information</a></li>
+            <li><a class="dropdown-item" routerLink="/transaction-list">Transaction Overview</a></li>
+            <li><a class="dropdown-item btn" (click)="logout()">Logout</a></li>
+          </ul>
+        </div>
+        <ng-template #showLogin>
+          <a class="nav-link" routerLink="/login">Login/Signup</a>
+        </ng-template>
+      </div>
+    </div>
+  </div>
+</nav>

@@ -1,0 +1,41 @@
+<div class="row justify-content-center">
+  <div class="col-sm-12 col-md-6">
+    <div class="card shadow pastel">
+      <div class="card-body">
+        <div class="d-flex justify-content-between">
+          <h1 class="display-5">Create Account</h1>
+          <a routerLink="/login" class="text-primary">Login with your Account</a>
+        </div>
+        <form [formGroup]="createForm" (ngSubmit)="createAccount()">
+          <div class="mb-3">
+            <label for="email" class="form-label">Email:</label>
+            <input type="email" class="form-control form-control-lg" name="email" id="email" formControlName="email"
+              placeholder="example@gmail.com" [ngClass]="{'is-invalid' : isInValid('email')}">
+            <span *ngIf="isInValid('email')" class="text-danger">Required.</span>
+          </div>
+          <div class="mb-3">
+            <label for="password" class="form-label">Password:</label>
+            <input type="password" class="form-control form-control-lg" name="password" id="password"
+              formControlName="password" [ngClass]="{'is-invalid' : isInValid('password')}">
+            <span *ngIf="isInValid('password')" class="text-danger" placement="bottom" ngbTooltip="Must be at least 6 characters">Does not meet requirements.
+              <svg class="bi" width="16" height="16" fill="currentColor">
+                <use xlink:href="assets/bootstrap-icons.svg#info-circle" />
+              </svg>
+            </span>
+          </div>
+          <div class="mb-3">
+            <label for="cpassword" class="form-label">Confirm Password:</label>
+            <input type="password" class="form-control form-control-lg" name="cpassword" id="cpassword"
+              formControlName="cpassword"
+              [ngClass]="{'is-invalid' : createForm.get('cpassword')!.touched && createForm.errors?.notSame }">
+            <span *ngIf="createForm.get('cpassword')!.touched && createForm.errors?.notSame" class="text-danger">Passwords
+              do not match</span>
+          </div>
+          <div class="d-grid">
+            <button type="submit" class="btn btn-lg btn-success" [disabled]="!createForm.valid">Create Account</button>
+          </div>
+        </form>
+      </div>
+    </div>    
+  </div>
+</div>

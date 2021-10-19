@@ -1,4 +1,5 @@
-import { Component } from '@angular/core';
+import { Component, HostListener } from '@angular/core';
+import { AngularFireAuth } from '@angular/fire/compat/auth';
 
 @Component({
   selector: 'app-root',
@@ -6,7 +7,12 @@ import { Component } from '@angular/core';
   styleUrls: ['./app.component.scss']
 })
 export class AppComponent {
+  @HostListener('window:beforeunload', ['$event'])
+  beforeUnloadHandler(event: any){
+    this.auth.signOut();
+  }
+
   title = 'ThinkBudget';
-  constructor() {
+  constructor(private auth: AngularFireAuth) {
   }
 }
