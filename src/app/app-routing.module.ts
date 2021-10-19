@@ -8,7 +8,7 @@ import { AccountSettingsComponent } from './modules/account/account-settings/acc
 
 import { AngularFireAuthGuard, redirectUnauthorizedTo } from '@angular/fire/compat/auth-guard';
 import { TransactionListComponent } from './modules/transactions/transaction-list/transaction-list.component';
-import { BudgetCreatorComponent } from './modules/account/budget-creator/budget-creator.component';
+import { BudgetCreatorComponent } from './modules/budget/budget-creator/budget-creator.component';
 import { OverviewComponent } from './modules/budget/overview/overview.component';
 
 const redirectUnauthorizedToLogin = () => redirectUnauthorizedTo(['login']);
