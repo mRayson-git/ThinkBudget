@@ -7,7 +7,7 @@ import { Parser } from 'src/app/interfaces/parser';
 import { BudgetService } from 'src/app/services/budget.service';
 import { CsvProfileService } from 'src/app/services/csv-profile.service';
 import { ToastService } from 'src/app/services/toast.service';
-import { BudgetModalComponent } from '../budget-modal/budget-modal.component';
+import { BudgetModalComponent } from '../../budget/budget-modal/budget-modal.component';
 import { ModalComponent } from '../modal/modal.component';
 
 @Component({

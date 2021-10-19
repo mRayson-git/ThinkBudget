@@ -41,7 +41,7 @@ export class BudgetService {
 
   init(): void {
     this.auth.currentUser.then(user => {
-      this.budgetCollection = this.afs.collection<Budget>(user?.uid + '/resources/budget');
+      this.budgetCollection = this.afs.collection<Budget>(user?.uid + '/resources/budget', ref => ref.orderBy('categoryName', 'asc'));
       this.budget$ = this.budgetCollection.valueChanges();
     });
   }

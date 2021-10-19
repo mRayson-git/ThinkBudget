@@ -10,37 +10,44 @@ import { TransactionService } from 'src/app/services/transaction.service';
   styleUrls: ['./overview.component.scss']
 })
 export class OverviewComponent implements OnInit {
-  transactions: Transaction[] = [];
-  budgets: Budget[] = [];
-  totals: { category: string, amount: number, percentage: number }[] = [];
+  totals: { category: string, amount: number, remaining: number, percentage: number }[] = [];
+  currDate!: Date;
 
   constructor(private transactionService: TransactionService,
-    private budgetService: BudgetService) { }
+    private budgetService: BudgetService) {
+      this.currDate = new Date();
+    }
 
   ngOnInit(): void {
+    
+    // 1. Get budgets
+    // 2. Get transactions
+    // 3. Get totals
     this.budgetService.budget$.subscribe(budgets => {
-      this.budgets = budgets;
-      this.transactions = this.transactionService.getMonthlyTransactions();
-      console.log(this.transactions);
-      this.totals = this.getCategoryTotals();
-      console.log(this.totals);
+      this.transactionService.getMonthlyTransactions().subscribe(transactions => {
+        this.getCategoryTotals(budgets, transactions);
+      });
     });
   }
 
-  getCategoryTotals() {
-    let totals: { category: string, amount: number, percentage: number }[] = [];
-    this.budgets.forEach(budget => {
-      let total = 0;
-      let percentage = 0;
-      this.transactions.forEach(transaction => {
-        if (transaction.transCategory == budget.categoryName) {
-          total = total - transaction.transAmount;
-          percentage = total / budget.budgetAmount;
-        }
-      });
-      totals.push({ category: budget.categoryName, amount: total, percentage: percentage });
+  getCategoryTotals(budgets: Budget[], transactions: Transaction[]): void {
+    let totals: { category: string, amount: number, remaining: number, percentage: number }[] = [];
+    budgets.forEach(budget => {
+      if (budget.tracked){
+        let total = 0;
+        let percentage = 0;
+        let remaining = budget.budgetAmount;
+        transactions.forEach(transaction => {
+          if (transaction.transCategory == budget.categoryName) {
+            total = total - transaction.transAmount;
+            percentage = Math.round(total / budget.budgetAmount * 100);
+            remaining = remaining + transaction.transAmount;
+          }
+        });
+        totals.push({ category: budget.categoryName, amount: total, remaining: remaining, percentage: percentage });
+      }
     });
-    return totals;
+    this.totals = totals;
   }
 
 

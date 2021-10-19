@@ -41,7 +41,7 @@ export class CsvProfileService {
 
   init(): void {
     this.auth.currentUser.then(user => {
-      this.parserCollection = this.afs.collection<Parser>(user?.uid + '/resources/parsers');
+      this.parserCollection = this.afs.collection<Parser>(user?.uid + '/resources/parsers', ref => ref.orderBy('accountName', 'asc'));
       this.parsers$ = this.parserCollection.valueChanges();
     });
   }
