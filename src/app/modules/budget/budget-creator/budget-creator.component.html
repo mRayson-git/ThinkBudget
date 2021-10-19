@@ -63,6 +63,13 @@
                             <td [style.background]="budget.budgetColour" *ngIf="budget.tracked"></td>
                         </tr>
                     </tbody>
+                    <tfoot>
+                        <tr>
+                            <td>Total Budgeted:</td>
+                            <td>{{getTotalBudgeted() | currency}}</td>
+                            <td></td>
+                        </tr>
+                    </tfoot>
                 </table>
                 <h3>Untracked Budgets</h3>
                 <table class="table table-hover">

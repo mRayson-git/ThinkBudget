@@ -71,6 +71,16 @@ export class BudgetCreatorComponent implements OnInit {
     modalRef.componentInstance.budget = budget;
   }
 
+  getTotalBudgeted(): number {
+    let total = 0;
+    this.budgets.forEach(budget => {
+      if (budget.tracked) {
+        total = total + budget.budgetAmount;
+      }
+    });
+    return total;
+  }
+
   budgetInfo(): void{
     this.toastService.show({ type: 'info', content: 'Click on the table rows to alter the individual budgets', delay: 10000 });
   }
