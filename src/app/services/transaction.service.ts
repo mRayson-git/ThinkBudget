@@ -40,7 +40,10 @@ export class TransactionService {
       } else {
         transactions.forEach(transaction => {
           if (transaction.transDate > mostRecent!.transDate) {
-            this.transactionCollection.add(transaction);
+            this.transactionCollection.add(transaction).then(res => {
+              transaction.id = res.id;
+              this.transactionCollection.doc(res.id).set(transaction, { merge: true });
+            });
           } else {
             console.warn(transaction + " Requires manual addition");
           }
