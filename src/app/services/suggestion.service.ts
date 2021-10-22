@@ -30,4 +30,10 @@ export class SuggestionService {
     })
     .catch(error => this.toastService.show({ type: 'danger', content: `Could not add suggestion: ${error}` }));
   }
+
+  updateSuggestion(suggestion: Suggestion): void {
+    this.suggestionCollection.doc(suggestion.id).set(suggestion)
+    .then(res => this.toastService.show({type: 'success', content: 'Updated budget'}))
+    .catch(err => this.toastService.show({type: 'danger', content: `Could not update budget: ${err}`}));
+  }
 }

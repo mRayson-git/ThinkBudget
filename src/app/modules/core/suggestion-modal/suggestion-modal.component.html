@@ -7,10 +7,16 @@
         </select>
         <label for="content">What is the suggestion?</label>
         <textarea name="content" id="content" class="form-control" placeholder="Enter suggestion here" formControlName="content"></textarea>
+        <div class="form-check mb-3">
+            <input class="form-check-input" type="checkbox" value="" id="complete" formControlName="complete">
+            <label class="form-check-label" for="complete">
+                Completed?
+            </label>
+        </div>
         <div class="d-grid mt-3">
-            <button type="submit" class="btn btn-success" [disabled]="suggestionForm.invalid">Submit</button>
+            <button type="button" class="btn btn-success" [disabled]="suggestionForm.invalid" *ngIf="suggestion; else create" (click)="editSuggestion()">Update</button>
+            <ng-template #create><button type="button" class="btn btn-success" (click)="addSuggestion()">Submit</button></ng-template>
         </div>
         
     </form>
-
 </div>

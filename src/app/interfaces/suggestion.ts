@@ -5,4 +5,5 @@ export interface Suggestion {
     type: string,
     date: Timestamp,
     content: string,
+    complete?: boolean
 }

@@ -24,4 +24,9 @@ export class SuggestionsComponent implements OnInit {
     const modalRef = this.modalService.open(SuggestionModalComponent, { centered: true, size: 'lg' });
   }
 
+  editSuggestion(suggestion: Suggestion): void {
+    const modalRef = this.modalService.open(SuggestionModalComponent, { centered: true, size: 'lg' });
+    modalRef.componentInstance.suggestion = suggestion;
+  }
+
 }
