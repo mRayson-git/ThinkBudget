@@ -5,6 +5,8 @@ import { HomepageComponent } from './homepage/homepage.component';
 import { NavbarComponent } from './navbar/navbar.component';
 import { SharedModule } from '../shared/shared.module';
 import { ToastContainerComponent } from './toast-container/toast-container.component';
+import { SuggestionsComponent } from './suggestions/suggestions.component';
+import { SuggestionModalComponent } from './suggestion-modal/suggestion-modal.component';
 
 
 
@@ -13,7 +15,9 @@ import { ToastContainerComponent } from './toast-container/toast-container.compo
     Error404Component,
     HomepageComponent,
     NavbarComponent,
-    ToastContainerComponent
+    ToastContainerComponent,
+    SuggestionsComponent,
+    SuggestionModalComponent
   ],
   imports: [
     CommonModule,

@@ -8,6 +8,7 @@ import { checkPasswords } from '../validators/password';
 import { BudgetService } from 'src/app/services/budget.service';
 import { CsvProfileService } from 'src/app/services/csv-profile.service';
 import { TransactionService } from 'src/app/services/transaction.service';
+import { SuggestionService } from 'src/app/services/suggestion.service';
 
 @Component({
   selector: 'app-create',
@@ -25,7 +26,8 @@ export class CreateComponent implements OnInit {
     private router: Router,
     private ts: TransactionService,
     private bs: BudgetService,
-    private csvS: CsvProfileService) { }
+    private csvS: CsvProfileService,
+    private ss: SuggestionService) { }
 
   ngOnInit(): void {
   }
@@ -37,6 +39,7 @@ export class CreateComponent implements OnInit {
       this.ts.init();
       this.bs.init();
       this.csvS.init();
+      this.ss.init();
       this.router.navigate(['/']);
     }).catch(error => {
       this.toastService.show({ type: 'danger', content: error.message });

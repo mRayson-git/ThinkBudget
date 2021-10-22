@@ -12,9 +12,6 @@ import { BudgetModalComponent } from '../budget-modal/budget-modal.component';
   styleUrls: ['./budget-creator.component.scss']
 })
 export class BudgetCreatorComponent implements OnInit {
-  categoryNameForm: FormGroup = new FormGroup({
-    categoryName: new FormControl('', Validators.required)
-  });
   budgetForm: FormGroup = new FormGroup({
     tracked: new FormControl(true),
     categoryName: new FormControl('', Validators.required),
@@ -30,7 +27,7 @@ export class BudgetCreatorComponent implements OnInit {
 
   budgets: Budget[] = [];
 
-  constructor(private toastService: ToastService, private budgetService: BudgetService, private modalService: NgbModal) { }
+  constructor(private toastService: ToastService, public budgetService: BudgetService, private modalService: NgbModal) { }
 
   ngOnInit(): void {
     this.budgetService.budget$.subscribe(budgets => {
@@ -54,16 +51,13 @@ export class BudgetCreatorComponent implements OnInit {
     });
   }
 
-  addCatName(): void {
-    this.categories.push(this.categoryNameForm.get('categoryName')!.value);
-    this.toastService.show({ type: 'success', content: 'Added category name to selection'});
-    this.categoryNameForm.reset();
-  }
-
   addBudget(): void {
     console.log(this.budgetForm.value);
     this.budgetService.addBudget(this.budgetForm.value);
-    this.budgetForm.reset();
+    this.budgetForm.reset({
+      tracked: true,
+      categoryName: '',
+    });
   }
 
   editBudget(budget: Budget): void {

@@ -1,0 +1,16 @@
+<button class="btn btn-success my-3" (click)="addSuggestion()">Add suggestion</button>
+<h1>Current Suggestions</h1>
+<div class="card shadow-sm mb-3" *ngFor="let suggestion of suggestions">
+    <div class="card-header pastel" *ngIf="suggestion.type == 'Feature Request'; else bug">
+        <h2>{{suggestion.type}}</h2>
+    </div>
+    <ng-template #bug>
+        <div class="card-header pastel-danger">
+            <h2>{{suggestion.type}}</h2>
+        </div>
+    </ng-template>
+    <div class="card-body">
+        <p>{{suggestion.content}}</p>
+        <p>{{suggestion.date.toDate() | date}}</p>
+    </div>
+</div>

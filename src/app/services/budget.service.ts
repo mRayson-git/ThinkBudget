@@ -12,6 +12,40 @@ import { ToastService } from './toast.service';
 export class BudgetService {
   budget$ = new Observable<Budget[]>();
   budgetCollection!: AngularFirestoreCollection<Budget>;
+  budgetCategories: string[] = [
+    "Food: Delivery",
+    "Food: Dining Out",
+    "Food: Groceries",
+    "Housing: HOA Dues",
+    "Housing: Mortgage",
+    "Housing: Maintenance",
+    "Housing: Renovations",
+    "Housing: Rent",
+    "Income: Misc",
+    "Income: Payroll",
+    "Insurance: Dental",
+    "Insurance: Health",
+    "Insurance: Optometry",
+    "Personal: Entertainment",
+    "Personal: Gifts",
+    "Personal: Health",
+    "Personal: Hobby",
+    "Personal: Recreation",
+    "Saving: Crypto",
+    "Saving: Emergency Fund",
+    "Saving: Investment",
+    "Saving: Non-Investment",
+    "Transportation: Car payments",
+    "Transportation: Gas",
+    "Transportation: Maintenance",
+    "Transportation: Parking",
+    "Transportation: Repairs",
+    "Transportation: Tolls",
+    "Utilities: Electricity",
+    "Utilities: Gas",
+    "Utilities: Phone",
+    "Utilities: Water",
+  ]
 
   constructor(private afs: AngularFirestore, private auth: AngularFireAuth, private toastService: ToastService) {
     

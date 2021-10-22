@@ -10,6 +10,7 @@ import { AngularFireAuthGuard, redirectUnauthorizedTo } from '@angular/fire/comp
 import { TransactionListComponent } from './modules/transactions/transaction-list/transaction-list.component';
 import { BudgetCreatorComponent } from './modules/budget/budget-creator/budget-creator.component';
 import { OverviewComponent } from './modules/budget/overview/overview.component';
+import { SuggestionsComponent } from './modules/core/suggestions/suggestions.component';
 
 const redirectUnauthorizedToLogin = () => redirectUnauthorizedTo(['login']);
 
@@ -17,6 +18,7 @@ const routes: Routes = [
   { path: 'homepage', component: HomepageComponent },
   { path: 'login', component: LoginComponent },
   { path: 'create', component: CreateComponent },
+  { path: 'suggestions', component: SuggestionsComponent, canActivate: [AngularFireAuthGuard], data: { authGuardPipe: redirectUnauthorizedToLogin } },
   { path: 'account/settings', component: AccountSettingsComponent, canActivate: [AngularFireAuthGuard], data: { authGuardPipe: redirectUnauthorizedToLogin } },
   { path: 'transaction-list', component: TransactionListComponent, canActivate: [AngularFireAuthGuard], data: { authGuardPipe: redirectUnauthorizedToLogin } },
   { path: 'account/budget-creator', component: BudgetCreatorComponent, canActivate: [AngularFireAuthGuard], data: { authGuardPipe: redirectUnauthorizedToLogin } },

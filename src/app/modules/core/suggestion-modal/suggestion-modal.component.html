@@ -1,0 +1,16 @@
+<div class="container my-3">
+    <form [formGroup]="suggestionForm" (ngSubmit)="addSuggestion()">
+        <label for="type">Type</label>
+        <select name="type" id="type" class="form-select" formControlName="type">
+            <option value="">Select a suggestion type</option>
+            <option *ngFor="let type of types" value={{type}}>{{type}}</option>
+        </select>
+        <label for="content">What is the suggestion?</label>
+        <textarea name="content" id="content" class="form-control" placeholder="Enter suggestion here" formControlName="content"></textarea>
+        <div class="d-grid mt-3">
+            <button type="submit" class="btn btn-success" [disabled]="suggestionForm.invalid">Submit</button>
+        </div>
+        
+    </form>
+
+</div>

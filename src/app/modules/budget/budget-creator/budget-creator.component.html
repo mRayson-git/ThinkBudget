@@ -11,14 +11,6 @@
         <p>Here is where you can create/update your budget:</p>
         <div class="row">
             <div class="col-sm-12 col-md-6">
-                <form [formGroup]="categoryNameForm" (ngSubmit)="addCatName()">
-                    <label for="categoryName">Category Name</label>
-                    <input type="text" class="form-control" id="categoryName" name="categoryName" formControlName="categoryName">
-                    <div class="d-grid mt-3">
-                        <button type="submit" class="btn btn-success" [disabled]="categoryNameForm.invalid">Add category name</button>
-                    </div>
-                </form>
-                <hr>
                 <h2 class="my-3">Budget Properties</h2>
                 <form [formGroup]="budgetForm" class="mt-3" (ngSubmit)="addBudget()">
                     <div class="form-check mb-3">
@@ -30,7 +22,7 @@
                     <label for="categoryName">Category Name</label>
                     <select name="categoryName" id="categoryName" class="form-select" formControlName="categoryName">
                         <option value="">Select a category</option>
-                        <option *ngFor="let cat of categories">{{cat}}</option>
+                        <option *ngFor="let cat of budgetService.budgetCategories">{{cat}}</option>
                     </select>
                     <label for="budgetAmount" *ngIf="budgetForm.get('tracked')!.value == true; else untracked">Budgeted Amount</label>
                     <ng-template #untracked><label for="budgetAmount">Estimated Amount</label></ng-template>

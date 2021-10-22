@@ -4,6 +4,7 @@ import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms'
 import { Router } from '@angular/router';
 import { BudgetService } from 'src/app/services/budget.service';
 import { CsvProfileService } from 'src/app/services/csv-profile.service';
+import { SuggestionService } from 'src/app/services/suggestion.service';
 import { ToastService } from 'src/app/services/toast.service';
 import { TransactionService } from 'src/app/services/transaction.service';
 
@@ -22,7 +23,8 @@ export class LoginComponent implements OnInit {
     private router: Router,
     private ts: TransactionService,
     private bs: BudgetService,
-    private csvS: CsvProfileService) { }
+    private csvS: CsvProfileService,
+    private ss: SuggestionService) { }
 
   ngOnInit(): void {
   }
@@ -38,6 +40,7 @@ export class LoginComponent implements OnInit {
       this.ts.init();
       this.bs.init();
       this.csvS.init();
+      this.ss.init();
       this.router.navigate(['/']);
     }).catch(error => {
       this.loginForm.reset();
