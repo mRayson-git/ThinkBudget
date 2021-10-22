@@ -19,13 +19,8 @@ export class BudgetCreatorComponent implements OnInit {
     budgetColour: new FormControl('', Validators.required)
   });
 
-  categories: string[] = [
-    "Groceries",
-    "Rent",
-    "Electricity"
-  ]
-
   budgets: Budget[] = [];
+  categories: string[] = [];
 
   constructor(private toastService: ToastService, public budgetService: BudgetService, private modalService: NgbModal) { }
 
@@ -44,16 +39,22 @@ export class BudgetCreatorComponent implements OnInit {
         }
       });
       this.budgets.forEach(budget => {
-        if (this.categories.find(name => name == budget.categoryName) == undefined){
-          this.categories.push(budget.categoryName);
+        if (!this.categories.find(category => category == budget.category)) {
+          this.categories.push(budget.category!);
         }
       });
+      console.log(this.categories);
     });
   }
 
   addBudget(): void {
-    console.log(this.budgetForm.value);
-    this.budgetService.addBudget(this.budgetForm.value);
+    let budget: Budget = this.budgetForm.value;
+    let toBeSplit: string = this.budgetForm.get('categoryName')!.value;
+    budget.category = toBeSplit.split(': ')[0];
+    budget.categoryName = toBeSplit.split(': ')[1];
+    this.budgetService.addBudget(budget);
+    // Add it to the array if its not already there
+    if (!this.categories.find(category => category == budget.category)) {this.categories.push(budget.category);}
     this.budgetForm.reset({
       tracked: true,
       categoryName: '',

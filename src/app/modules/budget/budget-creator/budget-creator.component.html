@@ -22,7 +22,7 @@
                     <label for="categoryName">Category Name</label>
                     <select name="categoryName" id="categoryName" class="form-select" formControlName="categoryName">
                         <option value="">Select a category</option>
-                        <option *ngFor="let cat of budgetService.budgetCategories">{{cat}}</option>
+                        <option *ngFor="let cat of budgetService.budgetCategorieNames">{{cat}}</option>
                     </select>
                     <label for="budgetAmount" *ngIf="budgetForm.get('tracked')!.value == true; else untracked">Budgeted Amount</label>
                     <ng-template #untracked><label for="budgetAmount">Estimated Amount</label></ng-template>
@@ -40,23 +40,19 @@
             </div>
             <div class="col-sm-12 col-md-6 overflow-auto">
                 <h3>Tracked Budgets</h3>
-                <table class="table table-hover">
-                    <thead>
+                <table class="table table-hover table-borderless">
+                    <tbody *ngFor="let category of categories" class="mb-0">
                         <tr>
-                            <td>Category</td>
-                            <td>Budget</td>
-                            <td>Colour</td>
+                            <td colspan="3" class="table-success">{{category}}</td>
                         </tr>
-                    </thead>
-                    <tbody>
                         <tr *ngFor="let budget of budgets" (click)="editBudget(budget)">
-                            <td *ngIf="budget.tracked">{{budget.categoryName}}</td>
-                            <td *ngIf="budget.tracked">{{budget.budgetAmount | currency}}</td>
-                            <td [style.background]="budget.budgetColour" *ngIf="budget.tracked"></td>
+                            <td *ngIf="budget.tracked && budget.category == category">{{budget.categoryName}}</td>
+                            <td *ngIf="budget.tracked && budget.category == category">{{budget.budgetAmount | currency}}</td>
+                            <td [style.background]="budget.budgetColour" *ngIf="budget.tracked && budget.category == category"></td>
                         </tr>
                     </tbody>
                     <tfoot>
-                        <tr>
+                        <tr class="table-dark">
                             <td>Total Budgeted:</td>
                             <td>{{getTotalBudgeted() | currency}}</td>
                             <td></td>

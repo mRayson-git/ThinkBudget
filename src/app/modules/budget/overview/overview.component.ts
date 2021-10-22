@@ -11,8 +11,8 @@ import { TransactionService } from 'src/app/services/transaction.service';
   styleUrls: ['./overview.component.scss']
 })
 export class OverviewComponent implements OnInit {
-  totals: { category: string, amount: number, remaining: number, percentage: number }[] = [];
-  untrackedTotals: { category: string, amount: number, remaining: number, percentage: number }[] = [];
+  totals: { category: string, categoryName: string, amount: number, remaining: number, percentage: number }[] = [];
+  categories: string[] = [];
   currDate!: Date;
 
   showUntracked: FormGroup = new FormGroup({
@@ -20,7 +20,7 @@ export class OverviewComponent implements OnInit {
   });
 
   constructor(private transactionService: TransactionService,
-    private budgetService: BudgetService) {
+    public budgetService: BudgetService) {
       this.currDate = new Date();
     }
 
@@ -37,9 +37,10 @@ export class OverviewComponent implements OnInit {
   }
 
   getCategoryTotals(budgets: Budget[], transactions: Transaction[]): void {
-    let totals: { category: string, amount: number, remaining: number, percentage: number }[] = [];
-    let untrackedTotals: { category: string, amount: number, remaining: number, percentage: number }[] = [];
+    let totals: { category: string, categoryName: string, amount: number, remaining: number, percentage: number }[] = [];
+    // let untrackedTotals: { category: string, amount: number, remaining: number, percentage: number }[] = [];
     budgets.forEach(budget => {
+      if (!this.categories.find(category=> category == budget.category)){this.categories.push(budget.category!)}
       if (budget.tracked){
         let total = 0;
         let percentage = 0;
@@ -51,23 +52,10 @@ export class OverviewComponent implements OnInit {
             remaining = remaining + transaction.transAmount;
           }
         });
-        totals.push({ category: budget.categoryName, amount: total, remaining: remaining, percentage: percentage });
-      } else {
-        let total = 0;
-        let percentage = 0;
-        let remaining = budget.budgetAmount;
-        transactions.forEach(transaction => {
-          if (transaction.transCategory == budget.categoryName) {
-            total = total - transaction.transAmount;
-            percentage = Math.round(total / budget.budgetAmount * 100);
-            remaining = remaining + transaction.transAmount;
-          }
-        });
-        untrackedTotals.push({ category: budget.categoryName, amount: total, remaining: remaining, percentage: percentage });
+        totals.push({ category: budget.category!, categoryName: budget.categoryName, amount: total, remaining: remaining, percentage: percentage });
       }
     });
     this.totals = totals;
-    this.untrackedTotals = untrackedTotals;
   }
 
   getTotalSpent(): number {
@@ -76,6 +64,16 @@ export class OverviewComponent implements OnInit {
       totalSpent = totalSpent + total.amount;
     });
     return totalSpent;
+  }
+
+  getTotalSaved(): number {
+    let totalSaved = 0;
+    this.totals.forEach( total => {
+      if (total.category == 'Saving') {
+        totalSaved = totalSaved + total.amount
+      }
+    });
+    return totalSaved;
   }
 
 

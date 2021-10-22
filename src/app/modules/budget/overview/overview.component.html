@@ -1,14 +1,22 @@
 <h1 class="display-5">{{currDate | date:'MMMM'}}'s Budget</h1>
 <hr>
-<p *ngFor="let total of totals">
-  {{total.category}}: {{total.percentage}}% used ({{total.remaining | currency}} remaining)
-  <ngb-progressbar type="danger" [value]="total.percentage" [striped]="true" [animated]="true"
-    *ngIf="total.percentage > 100">{{total.amount | currency}}</ngb-progressbar>
-  <ngb-progressbar type="danger" [value]="total.percentage" *ngIf="total.percentage >= 90 && total.percentage <= 100">
-    {{total.amount | currency}}</ngb-progressbar>
-  <ngb-progressbar type="warning" [value]="total.percentage" *ngIf="total.percentage >= 50 && total.percentage < 90">
-    {{total.amount | currency}}</ngb-progressbar>
-  <ngb-progressbar type="success" [value]="total.percentage" *ngIf="total.percentage < 50">{{total.amount |
-                currency}}</ngb-progressbar>
-</p>
-<p class="fs-3">Total used so far: {{getTotalSpent() | currency}}</p>
+<div class="card card-body">
+  <div *ngFor="let category of categories">
+    <h2 class="h5 pastel p-3 text-center">{{category}}</h2>
+    <div *ngFor="let total of totals">
+      <p *ngIf="total.category == category">
+        {{total.categoryName}}: {{total.percentage}}% used
+        <ngb-progressbar type="danger" [value]="total.percentage" *ngIf="total.percentage >= 100">
+          {{total.amount | currency}}</ngb-progressbar>
+        <ngb-progressbar type="success" [value]="total.percentage" *ngIf="total.percentage < 100">
+          {{total.amount | currency}}</ngb-progressbar>
+      </p>
+    </div>
+  </div>
+  <h2 class="h5 pastel p-3 text-center">Totals</h2>
+  <div class="text-center">
+    <p>Total saved so far: {{getTotalSaved() | currency}}</p>
+    <p>Total spent so far: {{getTotalSpent() - getTotalSaved() | currency}}</p>
+    <p>Total budgeted amount used: {{getTotalSpent() | currency}}</p>
+  </div>
+</div>

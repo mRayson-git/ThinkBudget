@@ -30,6 +30,9 @@ export class BudgetModalComponent implements OnInit {
   updateBudget(): void {
     let updatedBudget: Budget = this.budgetForm.value;
     updatedBudget.id = this.budget.id;
+    let toBeSplit: string = this.budgetForm.get('categoryName')!.value;
+    updatedBudget.category = toBeSplit.split(': ')[0];
+    updatedBudget.categoryName = toBeSplit.split(': ')[1];
     this.budgetService.updateBudget(updatedBudget);
     this.modalService.dismissAll();
   }

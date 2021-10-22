@@ -13,6 +13,16 @@ export class BudgetService {
   budget$ = new Observable<Budget[]>();
   budgetCollection!: AngularFirestoreCollection<Budget>;
   budgetCategories: string[] = [
+    "Food",
+    "Housing",
+    "Income",
+    "Insurance",
+    "Personal",
+    "Saving",
+    "Transportation",
+    "Utilities"
+  ]
+  budgetCategorieNames: string[] = [
     "Food: Delivery",
     "Food: Dining Out",
     "Food: Groceries",
@@ -41,6 +51,7 @@ export class BudgetService {
     "Transportation: Parking",
     "Transportation: Repairs",
     "Transportation: Tolls",
+    "Transportation: Transit Pass",
     "Utilities: Electricity",
     "Utilities: Gas",
     "Utilities: Phone",
