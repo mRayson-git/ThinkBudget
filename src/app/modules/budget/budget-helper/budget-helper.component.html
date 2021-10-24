@@ -1,0 +1,57 @@
+<h1>Budget Building Questionair</h1>
+<p>By filling out these questions we can build you a nice default budget that you can later customize should you choose.</p>
+<div class="row">
+    <div class="col-sm-12 col-md-6">
+        <form [formGroup]="budgetForm">
+            <label for="income">What is your projected income for the month?</label>
+            <div class="input-group mb-3">
+                <span class="input-group-text">$</span>
+                <input type="number" name="income" id="income" formControlName="income" class="form-control">
+            </div>
+            <label for="food">What percentage of your income would you like budgeted for food? (Recommended 10-20%)</label>
+            <div class="input-group mb-3">
+                <input type="number" name="food" id="food" formControlName="food" class="form-control">
+                <span class="input-group-text">%</span>
+            </div>
+            <label for="housing">What percentage of your income would you like budgeted for housing? (Recommended 35%)</label>
+            <div class="input-group mb-3">
+                <input type="number" name="housing" id="housing" formControlName="housing" class="form-control">
+                <span class="input-group-text">%</span>
+            </div>
+            <label for="personal">What percentage of your income would you like budgeted for personal needs? (Recommended 5-10%)</label>
+            <div class="input-group mb-3">
+                <input type="number" name="personal" id="personal" formControlName="personal" class="form-control">
+                <span class="input-group-text">%</span>
+            </div>
+            <label for="saving">What percentage of your income would you like budgeted for savings? (Recommended 5-10%)</label>
+            <div class="input-group mb-3">
+                <input type="number" name="saving" id="saving" formControlName="saving" class="form-control">
+                <span class="input-group-text">%</span>
+            </div>
+            <label for="transportation">What percentage of your income would you like budgeted for transportation? (Recommended 15-20%)</label>
+            <div class="input-group mb-3">
+                <input type="number" name="transportation" id="transportation" formControlName="transportation" class="form-control">
+                <span class="input-group-text">%</span>
+            </div>
+            <label for="utilities">What percentage of your income would you like budgeted for utilities? (Recommended 5%)</label>
+            <div class="input-group mb-3">
+                <input type="number" name="utilities" id="utilities" formControlName="utilities" class="form-control">
+                <span class="input-group-text">%</span>
+            </div>
+            <label for="insurance">What percentage of your income would you like budgeted for insurance? (Recommended 10%)</label>
+            <div class="input-group mb-3">
+                <input type="number" name="insurance" id="insurance" formControlName="insurance" class="form-control">
+                <span class="input-group-text">%</span>
+            </div>
+            <label for="misc">What percentage of your income would you like budgeted for flex? (Recommended whatever is remaining)</label>
+            <div class="input-group mb-3">
+                <input type="number" name="misc" id="misc" formControlName="misc" class="form-control">
+                <span class="input-group-text">%</span>
+            </div>
+            <div class="d-grid">
+                <button type="submit" class="btn btn-success" [disabled]="budgetForm.invalid">Create budget</button>
+            </div>
+        </form>
+    </div>
+</div>
+

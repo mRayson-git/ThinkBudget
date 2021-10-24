@@ -4,6 +4,7 @@ import { SharedModule } from '../shared/shared.module';
 import { OverviewComponent } from './overview/overview.component';
 import { BudgetCreatorComponent } from './budget-creator/budget-creator.component';
 import { BudgetModalComponent } from './budget-modal/budget-modal.component';
+import { BudgetHelperComponent } from './budget-helper/budget-helper.component';
 
 
 
@@ -11,7 +12,8 @@ import { BudgetModalComponent } from './budget-modal/budget-modal.component';
   declarations: [
     OverviewComponent,
     BudgetCreatorComponent,
-    BudgetModalComponent
+    BudgetModalComponent,
+    BudgetHelperComponent
   ],
   imports: [
     CommonModule,

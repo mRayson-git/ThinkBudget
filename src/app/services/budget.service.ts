@@ -20,7 +20,8 @@ export class BudgetService {
     "Personal",
     "Saving",
     "Transportation",
-    "Utilities"
+    "Utilities",
+    "Misc"
   ]
   budgetCategorieNames: string[] = [
     "Food: Delivery",
@@ -56,6 +57,7 @@ export class BudgetService {
     "Utilities: Gas",
     "Utilities: Phone",
     "Utilities: Water",
+    "Misc: Flex",
   ]
 
   constructor(private afs: AngularFirestore, private auth: AngularFireAuth, private toastService: ToastService) {

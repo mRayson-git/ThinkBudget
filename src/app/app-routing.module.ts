@@ -11,6 +11,7 @@ import { TransactionListComponent } from './modules/transactions/transaction-lis
 import { BudgetCreatorComponent } from './modules/budget/budget-creator/budget-creator.component';
 import { OverviewComponent } from './modules/budget/overview/overview.component';
 import { SuggestionsComponent } from './modules/core/suggestions/suggestions.component';
+import { BudgetHelperComponent } from './modules/budget/budget-helper/budget-helper.component';
 
 const redirectUnauthorizedToLogin = () => redirectUnauthorizedTo(['login']);
 
@@ -21,7 +22,8 @@ const routes: Routes = [
   { path: 'suggestions', component: SuggestionsComponent, canActivate: [AngularFireAuthGuard], data: { authGuardPipe: redirectUnauthorizedToLogin } },
   { path: 'account/settings', component: AccountSettingsComponent, canActivate: [AngularFireAuthGuard], data: { authGuardPipe: redirectUnauthorizedToLogin } },
   { path: 'transaction-list', component: TransactionListComponent, canActivate: [AngularFireAuthGuard], data: { authGuardPipe: redirectUnauthorizedToLogin } },
-  { path: 'account/budget-creator', component: BudgetCreatorComponent, canActivate: [AngularFireAuthGuard], data: { authGuardPipe: redirectUnauthorizedToLogin } },
+  { path: 'budget-helper', component: BudgetHelperComponent, canActivate: [AngularFireAuthGuard], data: { authGuardPipe: redirectUnauthorizedToLogin } },
+  { path: 'budget-creator', component: BudgetCreatorComponent, canActivate: [AngularFireAuthGuard], data: { authGuardPipe: redirectUnauthorizedToLogin } },
   { path: 'budget', component: OverviewComponent, canActivate: [AngularFireAuthGuard], data: { authGuardPipe: redirectUnauthorizedToLogin } },
   { path: '', redirectTo: 'homepage', pathMatch: 'full'},
   { path: '**', component: Error404Component }
