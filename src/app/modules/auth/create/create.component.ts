@@ -5,10 +5,10 @@ import { ToastService } from 'src/app/services/toast.service';
 import { Toast } from 'src/app/interfaces/toast';
 import { Router } from '@angular/router';
 import { checkPasswords } from '../validators/password';
-import { BudgetService } from 'src/app/services/budget.service';
 import { CsvProfileService } from 'src/app/services/csv-profile.service';
 import { TransactionService } from 'src/app/services/transaction.service';
 import { SuggestionService } from 'src/app/services/suggestion.service';
+import { MonthlyBudgetService } from 'src/app/services/monthly-budget.service';
 
 @Component({
   selector: 'app-create',
@@ -25,7 +25,7 @@ export class CreateComponent implements OnInit {
     public toastService: ToastService,
     private router: Router,
     private ts: TransactionService,
-    private bs: BudgetService,
+    private bs: MonthlyBudgetService,
     private csvS: CsvProfileService,
     private ss: SuggestionService) { }
 

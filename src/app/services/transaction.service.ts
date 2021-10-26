@@ -26,6 +26,18 @@ export class TransactionService {
 
   }
 
+  init(): void {
+    this.auth.currentUser.then(user => {
+      this.currentUser = user!;
+      this.limitFilter$ = new BehaviorSubject(5);
+      // Setup for transactions on transaction overview page
+      this.transactions$ = this.limitFilter$.pipe(
+        switchMap(limit => this.afs.collection<Transaction>(user?.uid + '/resources/transactions', ref => ref.orderBy('transDate', 'desc').limit(limit)).valueChanges()
+        ));
+      this.transactionCollection = this.afs.collection<Transaction>(user?.uid + '/resources/transactions');
+    });
+  }
+
   // Configure to use writeBatch and custom uuids
   batchSave(transactions: Transaction[]): void {
     this.getMostRecent(transactions[0].bankAccountName).get().subscribe(data => {
@@ -77,18 +89,6 @@ export class TransactionService {
 
   getTransactionsWithLimit(limit: number): void {
     this.limitFilter$?.next(limit);
-  }
-
-  init(): void {
-    this.auth.currentUser.then(user => {
-      this.currentUser = user!;
-      this.limitFilter$ = new BehaviorSubject(5);
-      // Setup for transactions on transaction overview page
-      this.transactions$ = this.limitFilter$.pipe(
-        switchMap(limit => this.afs.collection<Transaction>(user?.uid + '/resources/transactions', ref => ref.orderBy('transDate', 'desc').limit(limit)).valueChanges()
-        ));
-      this.transactionCollection = this.afs.collection<Transaction>(user?.uid + '/resources/transactions');
-    });
   }
 
   getMostRecent(bankAccountName: string): AngularFirestoreCollection<Transaction> {

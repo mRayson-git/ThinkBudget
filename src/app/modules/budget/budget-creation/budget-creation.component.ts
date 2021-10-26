@@ -23,7 +23,6 @@ export class BudgetCreationComponent implements OnInit {
   });
 
   currDate: Date = new Date();
-  currBudget?: MonthlyBudget;
   budgets: MonthlyBudget[] = [];
 
   currParentCategories: string[] = [];
@@ -32,19 +31,12 @@ export class BudgetCreationComponent implements OnInit {
 
   ngOnInit(): void {
     this.bs.budgets$.subscribe(budgets => {
-      console.log(budgets);
       this.budgets = budgets;
-      if (this.budgets.length > 0) {
-        // Do we have a budget for this month?
-        if (this.budgets[0].date.toDate().getMonth() == this.currDate.getMonth()) {
-          this.currBudget = this.budgets[0];
-          this.getCategories(this.currBudget);
-          this.incomeForm.get('income')?.setValue(this.currBudget.income);
-        }
-      } else {
-        this.currBudget = undefined;
-      }
     });
+    if (this.bs.currBudget) {
+      this.getCategories(this.bs.currBudget);
+      this.incomeForm.get('income')?.setValue(this.bs.currBudget.income);
+    }
   }
   
   addCategory(): void {
@@ -54,14 +46,14 @@ export class BudgetCreationComponent implements OnInit {
       amount: this.categoryForm.get('amount')?.value,
       colour: this.categoryForm.get('colour')?.value || this.getRandomColor()
     }
-    this.currBudget?.categories.push(category);
+    this.bs.currBudget?.categories.push(category);
     // Add to the parent categories if not already there
     if (!this.currParentCategories.find(parent => parent == category.parent)) {this.currParentCategories.push(category.parent);}
     this.sortCategoryNames();
   }
 
   editIncome(): void {
-    this.currBudget!.income = Number(this.incomeForm.get('income')?.value);
+    this.bs.currBudget!.income = Number(this.incomeForm.get('income')?.value);
   }
 
   editCategory(category: Category): void {
@@ -70,13 +62,13 @@ export class BudgetCreationComponent implements OnInit {
     modalRef.componentInstance.categoryEditEvent.subscribe((category: Category) => {
       console.log(category.parent);
       console.log(category.name);
-      let index = this.currBudget!.categories.findIndex(element => element.parent == category.parent && element.name == category.name);
+      let index = this.bs.currBudget!.categories.findIndex(element => element.parent == category.parent && element.name == category.name);
       console.log(index);
-      this.currBudget!.categories[index!] = category;
+      this.bs.currBudget!.categories[index!] = category;
     });
     modalRef.componentInstance.categoryRemoveEvent.subscribe((remove: Boolean) => {
       if (remove) {
-        this.currBudget!.categories = this.currBudget!.categories.filter(element => element != category);
+        this.bs.currBudget!.categories = this.bs.currBudget!.categories.filter(element => element != category);
       }
     });
   }
@@ -95,31 +87,37 @@ export class BudgetCreationComponent implements OnInit {
     this.bs.addBudget(budget);
   }
 
+  commitChanges(): void {
+    this.bs.editBudget(this.bs.currBudget!);
+  }
+
   // Helper methods
-  getCategories(budget: MonthlyBudget): void {
-    budget.categories.forEach(category => {
-      if (!this.currParentCategories.find(parent => parent == category.parent)) {this.currParentCategories.push(category.parent)}
-    });
+  getCategories(budget: MonthlyBudget | undefined): void {
+    if (budget){
+      budget.categories.forEach(category => {
+        if (!this.currParentCategories.find(parent => parent == category.parent)) {this.currParentCategories.push(category.parent)}
+      });
+    }
   }
 
   getTotalBudgeted(): number {
     let total = 0;
-    this.currBudget?.categories.forEach(category => {
+    this.bs.currBudget?.categories.forEach(category => {
       total = total + category.amount;
     });
     return total;
   }
 
   getRemainingToBudget(): number {
-    let remaining = this.currBudget!.income;
-    this.currBudget?.categories.forEach(category => {
+    let remaining = this.bs.currBudget!.income;
+    this.bs.currBudget?.categories.forEach(category => {
       remaining = remaining - category.amount;
     });
     return remaining;
   }
 
   sortCategoryNames(): void {
-    this.currBudget?.categories.sort((a,b) => {
+    this.bs.currBudget?.categories.sort((a,b) => {
       if (a.name > b.name) {
         return 1;
       } else if (a.name < b.name) {

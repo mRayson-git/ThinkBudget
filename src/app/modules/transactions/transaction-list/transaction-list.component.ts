@@ -3,10 +3,8 @@ import { AngularFirestore } from '@angular/fire/compat/firestore';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { Timestamp } from 'firebase/firestore';
-import { Budget } from 'src/app/interfaces/budget';
 import { Parser } from 'src/app/interfaces/parser';
 import { Transaction } from 'src/app/interfaces/transaction';
-import { BudgetService } from 'src/app/services/budget.service';
 import { CsvProfileService } from 'src/app/services/csv-profile.service';
 import { ToastService } from 'src/app/services/toast.service';
 import { TransactionService } from 'src/app/services/transaction.service';
@@ -28,20 +26,17 @@ export class TransactionListComponent implements OnInit {
     payee: new FormControl('')
   });
   parsers: Parser[] = [];
-  budgets: Budget[] = [];
   transactions: Transaction[] = [];
   file: any;
 
   constructor(public toastService: ToastService,
     public csvPS: CsvProfileService,
     public transactionService: TransactionService,
-    private modalService: NgbModal,
-    private budgetService: BudgetService) { }
+    private modalService: NgbModal) { }
 
   ngOnInit(): void {
     this.csvPS.parsers$.subscribe(result => this.parsers = result);
     this.transactionService.transactions$.subscribe(result => this.transactions = result);
-    this.budgetService.budget$.subscribe(content => this.budgets = content);
     this.transactionService.getMostRecent('PCFinancial');
   }
 
@@ -101,13 +96,11 @@ export class TransactionListComponent implements OnInit {
 
   addCustomTransaction(): void {
     const modalRef = this.modalService.open(TransModalComponent, { centered: true, size: 'lg' });
-    modalRef.componentInstance.budgets = this.budgets;
   }
 
   openTransUpdateDialog(transaction: Transaction): void {
     const modalRef = this.modalService.open(TransModalComponent, { centered: true, size: 'lg' });
     modalRef.componentInstance.trans = transaction;
-    modalRef.componentInstance.budgets = this.budgets;
   }
 
 }

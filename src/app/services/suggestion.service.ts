@@ -2,7 +2,6 @@ import { Injectable } from '@angular/core';
 import { AngularFireAuth } from '@angular/fire/compat/auth';
 import { AngularFirestore, AngularFirestoreCollection } from '@angular/fire/compat/firestore';
 import { Observable } from 'rxjs';
-import { Budget } from '../interfaces/budget';
 import { Suggestion } from '../interfaces/suggestion';
 import { ToastService } from './toast.service';
 

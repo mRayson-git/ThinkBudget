@@ -2,8 +2,8 @@ import { Component, Input, OnInit } from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { Timestamp } from 'firebase/firestore';
-import { Budget } from 'src/app/interfaces/budget';
 import { Transaction } from 'src/app/interfaces/transaction';
+import { MonthlyBudgetService } from 'src/app/services/monthly-budget.service';
 import { TransactionService } from 'src/app/services/transaction.service';
 
 @Component({
@@ -13,7 +13,6 @@ import { TransactionService } from 'src/app/services/transaction.service';
 })
 export class TransModalComponent implements OnInit {
   @Input() trans?: Transaction;
-  @Input() budgets?: Budget[]
 
   categories: string[] = [];
 
@@ -28,7 +27,8 @@ export class TransModalComponent implements OnInit {
     transNote: new FormControl(''),
     transCategory: new FormControl(''),
   })
-  constructor(private transactionService: TransactionService, private modalService: NgbModal) { }
+
+  constructor(private transactionService: TransactionService, private modalService: NgbModal, public bs: MonthlyBudgetService) { }
 
   ngOnInit(): void {
     if (this.trans) {
@@ -40,11 +40,7 @@ export class TransModalComponent implements OnInit {
       this.transForm.get('transPayee')?.setValue(this.trans?.transPayee);
       this.transForm.get('transType')?.setValue(this.trans?.transType);
       this.transForm.get('transNote')?.setValue(this.trans?.transNote);
-      this.transForm.get('transCategory')?.setValue(this.trans?.transCategory);
-    }
-    if (this.budgets) {
-      console.log('Adding categories');
-      this.budgets.forEach(budget => this.categories.push(budget.categoryName));
+      this.transForm.get('transCategory')?.setValue(this.trans?.transCategory || '');
     }
   }
 

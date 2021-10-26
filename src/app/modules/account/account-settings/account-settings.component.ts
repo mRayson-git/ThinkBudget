@@ -2,10 +2,10 @@ import { Component, OnInit } from '@angular/core';
 import { AngularFireAuth } from '@angular/fire/compat/auth';
 import { FormControl, FormGroup } from '@angular/forms';
 import { NgbModal, ModalDismissReasons } from '@ng-bootstrap/ng-bootstrap';
-import { Budget } from 'src/app/interfaces/budget';
+import { MonthlyBudget } from 'src/app/interfaces/monthly-budget';
 import { Parser } from 'src/app/interfaces/parser';
-import { BudgetService } from 'src/app/services/budget.service';
 import { CsvProfileService } from 'src/app/services/csv-profile.service';
+import { MonthlyBudgetService } from 'src/app/services/monthly-budget.service';
 import { ToastService } from 'src/app/services/toast.service';
 import { BudgetModalComponent } from '../../budget/budget-modal/budget-modal.component';
 import { ModalComponent } from '../modal/modal.component';
@@ -21,13 +21,14 @@ export class AccountSettingsComponent implements OnInit {
     email: new FormControl(''),
   });
   parsers: Parser[] = [];
-  budgets?: Budget[] = [];
+  currBudget?: MonthlyBudget;
+  currParentCategories: string[] = [];
 
   constructor(public auth: AngularFireAuth,
     public toastService: ToastService,
     public modalService: NgbModal,
     public csvPS: CsvProfileService,
-    public budgetService: BudgetService) { }
+    public bs: MonthlyBudgetService) { }
 
   ngOnInit(): void {
     this.auth.currentUser.then(user => {
@@ -38,9 +39,8 @@ export class AccountSettingsComponent implements OnInit {
     this.csvPS.parsers$.subscribe(result => {
       this.parsers = result;
     });
-    this.budgetService.budget$.subscribe(result => {
-      this.budgets = result;
-    });
+    console.log(this.bs.currBudget);
+    this.getCategories(this.bs.currBudget);
   }
 
   updateAccount(): void {
@@ -71,8 +71,12 @@ export class AccountSettingsComponent implements OnInit {
     modalRef.componentInstance.parser = parser;
   }
 
-  editBudget(budget: Budget): void {
-    const modalRef = this.modalService.open(BudgetModalComponent, { centered: true, size: 'lg' });
-    modalRef.componentInstance.budget = budget;
+  getCategories(budget: MonthlyBudget | undefined): void {
+    if (budget){
+      budget.categories.forEach(category => {
+        if (!this.currParentCategories.find(parent => parent == category.parent)) {this.currParentCategories.push(category.parent)}
+      });
+    }
   }
+
 }

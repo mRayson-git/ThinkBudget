@@ -1,8 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
-import { Budget } from 'src/app/interfaces/budget';
+import { MonthlyBudget } from 'src/app/interfaces/monthly-budget';
 import { Transaction } from 'src/app/interfaces/transaction';
-import { BudgetService } from 'src/app/services/budget.service';
+import { MonthlyBudgetService } from 'src/app/services/monthly-budget.service';
 import { TransactionService } from 'src/app/services/transaction.service';
 
 @Component({
@@ -11,8 +11,7 @@ import { TransactionService } from 'src/app/services/transaction.service';
   styleUrls: ['./overview.component.scss']
 })
 export class OverviewComponent implements OnInit {
-  totals: { category: string, categoryName: string, amount: number, remaining: number, percentage: number }[] = [];
-  categories: string[] = [];
+  totals: { parent: string, name: string, amount: number, remaining: number, percentage: number }[] = [];
   currDate!: Date;
 
   showUntracked: FormGroup = new FormGroup({
@@ -20,40 +19,33 @@ export class OverviewComponent implements OnInit {
   });
 
   constructor(private transactionService: TransactionService,
-    public budgetService: BudgetService) {
+    public bs: MonthlyBudgetService) {
       this.currDate = new Date();
     }
 
   ngOnInit(): void {
-    
-    // 1. Get budgets
-    // 2. Get transactions
-    // 3. Get totals
-    this.budgetService.budget$.subscribe(budgets => {
-      this.transactionService.getMonthlyTransactions().subscribe(transactions => {
-        this.getCategoryTotals(budgets, transactions);
-      });
+    // Get this months budget
+    this.transactionService.getMonthlyTransactions().subscribe(transactions => {
+      this.getCategoryTotals(this.bs.currBudget!, transactions);
     });
   }
 
-  getCategoryTotals(budgets: Budget[], transactions: Transaction[]): void {
-    let totals: { category: string, categoryName: string, amount: number, remaining: number, percentage: number }[] = [];
+  getCategoryTotals(budget: MonthlyBudget, transactions: Transaction[]): void {
+    let totals: { parent: string, name: string, amount: number, remaining: number, percentage: number }[] = [];
     // let untrackedTotals: { category: string, amount: number, remaining: number, percentage: number }[] = [];
-    budgets.forEach(budget => {
-      if (!this.categories.find(category=> category == budget.category)){this.categories.push(budget.category!)}
-      if (budget.tracked){
-        let total = 0;
-        let percentage = 0;
-        let remaining = budget.budgetAmount;
-        transactions.forEach(transaction => {
-          if (transaction.transCategory == budget.categoryName) {
-            total = total - transaction.transAmount;
-            percentage = Math.round(total / budget.budgetAmount * 100);
-            remaining = remaining + transaction.transAmount;
-          }
-        });
-        totals.push({ category: budget.category!, categoryName: budget.categoryName, amount: total, remaining: remaining, percentage: percentage });
-      }
+    budget.categories.forEach(category => {
+      let total = 0;
+      let percentage = 0;
+      let remaining = category.amount;
+      const fullName = category.parent + ": " + category.name;
+      transactions.forEach(transaction => {
+        if (transaction.transCategory == fullName) {
+          total = total - transaction.transAmount;
+          percentage = Math.round(total / category.amount * 100);
+          remaining = remaining + transaction.transAmount;
+        }
+      });
+      totals.push({ parent: category.parent, name: category.name, amount: total, remaining: remaining, percentage: percentage });
     });
     this.totals = totals;
   }
@@ -69,7 +61,7 @@ export class OverviewComponent implements OnInit {
   getTotalSaved(): number {
     let totalSaved = 0;
     this.totals.forEach( total => {
-      if (total.category == 'Saving') {
+      if (total.parent == 'Saving') {
         totalSaved = totalSaved + total.amount
       }
     });
