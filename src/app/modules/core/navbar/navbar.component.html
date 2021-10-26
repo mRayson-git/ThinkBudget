@@ -8,7 +8,16 @@
     <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
       <div class="navbar-nav">
         <a class="nav-link" routerLink="/">Home</a>
-        <a class="nav-link" *ngIf="auth.user | async as user" routerLink="/budget">Budget</a>
+        <div *ngIf="auth.user | async as user" class="nav-item dropdown">
+          <a class="nav-link dropdown-toggle" href="#" id="budgetDropdown" role="button"
+            data-bs-toggle="dropdown" aria-expanded="false">
+            Budget
+          </a>
+          <ul class="dropdown-menu" aria-labelledby="budgetDropdown">
+            <li><a class="dropdown-item" routerLink="/budget">Current Month Overview</a></li>
+            <li><a class="dropdown-item" routerLink="/budget-creation">Edit properties</a></li>
+          </ul>
+        </div>
         <div *ngIf="auth.user | async as user; else showLogin" class="nav-item dropdown">
           <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink" role="button"
             data-bs-toggle="dropdown" aria-expanded="false">

@@ -11,6 +11,7 @@ import { TransactionService } from 'src/app/services/transaction.service';
   styleUrls: ['./overview.component.scss']
 })
 export class OverviewComponent implements OnInit {
+  public Math = Math;
   totals: { parent: string, name: string, amount: number, remaining: number, percentage: number }[] = [];
   currDate!: Date;
 
@@ -66,6 +67,14 @@ export class OverviewComponent implements OnInit {
       }
     });
     return totalSaved;
+  }
+
+  getTotalBudgeted(): number {
+    let totalBudgeted = 0;
+    this.bs.currBudget?.categories.forEach(category => {
+      totalBudgeted += category.amount;
+    });
+    return totalBudgeted;
   }
 
 

@@ -1,15 +1,19 @@
 <div *ngIf="bs.currBudget; else noBudget">
   <h1 class="display-5">{{currDate | date:'MMMM'}}'s Budget</h1>
+  <p class="fs-3 text-muted">Estimated income: {{bs.currBudget.income | currency}}</p>
   <hr>
-  <div class="card card-body">
+  <div class="card card-body shadow">
     <div *ngFor="let parent of bs.getParentCategories()">
       <h2 class="h5 pastel p-3 text-center">{{parent}}</h2>
       <div *ngFor="let total of totals">
         <p *ngIf="total.parent == parent">
-          {{total.name}}: {{total.percentage}}% used
-          <ngb-progressbar type="danger" [value]="total.percentage" *ngIf="total.percentage >= 100">
+          {{total.name}}: {{total.percentage}}% used (
+            <span *ngIf="total.remaining >= 0; else over" class="text-success">{{total.remaining | currency}} remaining</span>
+            <ng-template #over><span class="text-danger">{{Math.abs(total.remaining) | currency}} over</span></ng-template>
+            )
+          <ngb-progressbar type="danger" [value]="total.percentage" *ngIf="total.percentage >= 100" style="height: 20px;">
             {{total.amount | currency}}</ngb-progressbar>
-          <ngb-progressbar type="success" [value]="total.percentage" *ngIf="total.percentage < 100">
+          <ngb-progressbar type="success" [value]="total.percentage" *ngIf="total.percentage < 100" style="height: 20px;">
             {{total.amount | currency}}</ngb-progressbar>
         </p>
       </div>
@@ -18,7 +22,10 @@
     <div class="text-center">
       <p>Total saved so far: {{getTotalSaved() | currency}}</p>
       <p>Total spent so far: {{getTotalSpent() - getTotalSaved() | currency}}</p>
-      <p>Total budgeted amount used: {{getTotalSpent() | currency}}</p>
+      <p>Total amount used: {{getTotalSpent() | currency}} 
+        <span *ngIf="getTotalSpent() > getTotalBudgeted(); else under" class="text-danger">over budget by {{getTotalSpent() - getTotalBudgeted() | currency}}</span>
+        <ng-template #under><span class="text-success">under budget by {{getTotalBudgeted() - getTotalSpent() | currency}}</span></ng-template>
+      </p>
     </div>
   </div>
 </div>
