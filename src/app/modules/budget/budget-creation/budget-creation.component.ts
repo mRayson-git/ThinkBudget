@@ -69,22 +69,33 @@ export class BudgetCreationComponent implements OnInit {
     modalRef.componentInstance.categoryRemoveEvent.subscribe((remove: Boolean) => {
       if (remove) {
         this.bs.currBudget!.categories = this.bs.currBudget!.categories.filter(element => element != category);
+        // Check to make sure parent is not empty now
+        this.bs.getCurrParentCategories();
       }
     });
   }
 
-  importDefault(): void {
-    let income = Number(this.incomeForm.get('income')!.value)
-    let budget: MonthlyBudget = {
-      income: income,
-      date: Timestamp.now(),
-      categories: [
-        { parent: "Food", name: "Groceries", amount: income * 0.1, colour: "#50C878" },
-        { parent: "Food", name: "Dining Out", amount: income * 0.1, colour: "#5F8575" },
-        { parent: "Saving", name: "Non-Investment", amount: income * 0.8, colour: "#4F7942" },
-      ]
+  importDefault(oldBudget?: MonthlyBudget): void {
+    if (!oldBudget){
+      let income = Number(this.incomeForm.get('income')!.value)
+      let budget: MonthlyBudget = {
+        income: income,
+        date: Timestamp.now(),
+        categories: [
+          { parent: "Food", name: "Groceries", amount: income * 0.1, colour: "#50C878" },
+          { parent: "Food", name: "Dining Out", amount: income * 0.1, colour: "#5F8575" },
+          { parent: "Saving", name: "Non-Investment", amount: income * 0.8, colour: "#4F7942" },
+        ]
+      }
+      this.bs.addBudget(budget);
+    } else {
+      let budget: MonthlyBudget = {
+        income: oldBudget.income,
+        date: Timestamp.now(),
+        categories: oldBudget.categories
+      }
+      this.bs.addBudget(budget);
     }
-    this.bs.addBudget(budget);
   }
 
   commitChanges(): void {

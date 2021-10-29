@@ -15,6 +15,7 @@ export class MonthlyBudgetService {
   budgets$ = new Observable<MonthlyBudget[]>();
   budgetCollection!: AngularFirestoreCollection<MonthlyBudget>;
   currBudget?: MonthlyBudget;
+  currParentCategories?: string[] = [];
 
   currentUser!: firebase.User;
 
@@ -76,6 +77,7 @@ export class MonthlyBudgetService {
       this.getThisMonthsBudget().subscribe(budgets => {
         if (budgets.length > 0) {
           this.currBudget = budgets[0];
+          this.getCurrParentCategories();
         } else {
           this.currBudget = undefined;
         }
@@ -89,6 +91,11 @@ export class MonthlyBudgetService {
         budget.id = result.id;
         this.budgetCollection.doc(budget.id).set(budget, {merge: true});
       });
+  }
+
+  removeBudget(id: string): void {
+    this.budgetCollection.doc(id).delete()
+      .then(res => this.ts.show({type: 'success', content: 'Removed budget'}))
   }
 
   editBudget(budget: MonthlyBudget): void {
@@ -114,11 +121,19 @@ export class MonthlyBudgetService {
     return names;
   }
 
-  getParentCategories(): string[] {
+  getParentCategories(budget: MonthlyBudget): string[] {
+    let parent: string[] = [];
+    budget.categories.forEach(category => {
+      if (!parent.find(parent => parent == category.parent)) { parent.push(category.parent); }
+    });
+    return parent;
+  }
+
+  getCurrParentCategories(): void {
     let parent: string[] = [];
     this.currBudget?.categories.forEach(category => {
       if (!parent.find(parent => parent == category.parent)) { parent.push(category.parent); }
     });
-    return parent;
+    this.currParentCategories = parent;
   }
 }

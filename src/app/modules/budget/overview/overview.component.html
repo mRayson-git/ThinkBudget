@@ -3,7 +3,7 @@
   <p class="fs-3 text-muted">Estimated income: {{bs.currBudget.income | currency}}</p>
   <hr>
   <div class="card card-body shadow">
-    <div *ngFor="let parent of bs.getParentCategories()">
+    <div *ngFor="let parent of bs.currParentCategories">
       <h2 class="h5 pastel p-3 text-center">{{parent}}</h2>
       <div *ngFor="let total of totals">
         <p *ngIf="total.parent == parent">
