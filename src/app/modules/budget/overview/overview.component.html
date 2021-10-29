@@ -11,9 +11,9 @@
             <span *ngIf="total.remaining >= 0; else over" class="text-success">{{total.remaining | currency}} remaining</span>
             <ng-template #over><span class="text-danger">{{Math.abs(total.remaining) | currency}} over</span></ng-template>
             )
-          <ngb-progressbar type="danger" [value]="total.percentage" *ngIf="total.percentage >= 100" style="height: 20px;">
+          <ngb-progressbar type="danger" [value]="total.percentage" *ngIf="total.percentage > 100" style="height: 20px;">
             {{total.amount | currency}}</ngb-progressbar>
-          <ngb-progressbar type="success" [value]="total.percentage" *ngIf="total.percentage < 100" style="height: 20px;">
+          <ngb-progressbar type="success" [value]="total.percentage" *ngIf="total.percentage <= 100" style="height: 20px;">
             {{total.amount | currency}}</ngb-progressbar>
         </p>
       </div>
