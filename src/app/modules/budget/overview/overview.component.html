@@ -14,15 +14,16 @@
 <div *ngIf="budgetShown; else noBudget">
   <p class="fs-3 text-muted">Estimated income: {{budgetShown.income | currency}}</p>
   <p class="fs-5 text-muted">Actual income so far: {{totalActualIncome | currency}}</p>
-  <hr>
-  <div style="display: block;">
+  <hr/>
+  <div style="position: relative;">
     <canvas baseChart 
       [datasets]="barChartData"
       [labels]="barChartLabels"
       [options]="barChartOptions"
       [plugins]="barChartPlugins"
       [legend]="barChartLegend"
-      [chartType]="barChartType">
+      [chartType]="barChartType"
+      [hidden]="chartShown">
     </canvas>
   </div>
   <div class="card card-body shadow">

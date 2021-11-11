@@ -101,7 +101,7 @@ export class MonthlyBudgetService {
   }
 
   editBudget(budget: MonthlyBudget): void {
-    this.budgetCollection.doc(budget.id).set(budget)
+    this.budgetCollection.doc(budget.id).set(budget, {merge: true})
       .then(res => {
         this.ts.show({type: 'success', content: 'Budget properties updated'});
         // Update the current budget variable

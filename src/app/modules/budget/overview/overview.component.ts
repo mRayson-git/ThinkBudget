@@ -24,15 +24,24 @@ export class OverviewComponent implements OnInit {
   budgetShown?: MonthlyBudget;
   budgetShownParents?: string[];
 
-  // Chart variables
+  // BarChart variables
+  chartShown = false;
   barChartOptions: ChartOptions = {
     responsive: true,
     title: {
       display: true,
-      text: 'Remaining Budget by Category'
+      text: 'Remaining Budget by Category',
+      fontSize: 20
     },
     legend: {
       position: 'right'
+    },
+    onResize: (newSize) => {
+      if (newSize.width < 800) {
+        this.chartShown = true;
+      } else {
+        this.chartShown = false;
+      }
     }
   };
   barChartLabels: Label[] = ['Budget'];
@@ -142,7 +151,7 @@ export class OverviewComponent implements OnInit {
         this.transactionService.getMonthlyTransactions(this.currDate).pipe(take(1)).subscribe(transactions => {
           this.getCategoryTotals(this.budgetShown!, transactions);
           this.setBarChartValues();
-          this.updateBudgetStats();
+          // this.updateBudgetStats();
         });
       } else {
         this.budgetShown = undefined;
@@ -169,15 +178,15 @@ export class OverviewComponent implements OnInit {
   }
 
   updateBudgetStats(): void {
-    this.budgetShown!.budgetStats!.totalSaved = this.getTotalSaved();
-    this.budgetShown!.budgetStats!.totalSpent = this.getTotalSpent();
-    this.budgetShown!.budgetStats!.totalSpendingBudget = this.getTotalSpendingBudgeted();
-    // console.log(this.getTotalSpent());
-    // console.log(this.getTotalSaved());
-    // console.log(this.getTotalSpendingBudgeted());
-    // Calculating flex ((total spent - total saved) - totalSpending Budgeted - Extra Income not accounted for)
-    this.budgetShown!.budgetStats!.totalDifference = this.getTotalOverSpentActual();
-    this.bs.editBudget(this.budgetShown!);
+    // If stats have changed, update
+    if (!this.budgetShown!.budgetStats || this.budgetShown!.budgetStats.totalDifference != this.getTotalOverSpentActual()){
+      this.budgetShown!.budgetStats!.totalSaved = this.getTotalSaved();
+      this.budgetShown!.budgetStats!.totalSpent = this.getTotalSpent();
+      this.budgetShown!.budgetStats!.totalSpendingBudget = this.getTotalSpendingBudgeted();
+      this.budgetShown!.budgetStats!.totalDifference = this.getTotalOverSpentActual();
+      this.bs.editBudget(this.budgetShown!);
+    }
+    
   }
 
   getCurrDate(): Date {
