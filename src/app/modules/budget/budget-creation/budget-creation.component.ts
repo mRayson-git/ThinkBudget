@@ -112,7 +112,7 @@ export class BudgetCreationComponent implements OnInit {
     this.bs.currBudget?.categories.forEach(category => {
       total = total + category.amount;
     });
-    return total;
+    return Math.round(total * 100) / 100;
   }
 
   getRemainingToBudget(): number {
@@ -120,7 +120,7 @@ export class BudgetCreationComponent implements OnInit {
     this.bs.currBudget?.categories.forEach(category => {
       remaining = remaining - category.amount;
     });
-    return remaining;
+    return Math.round(remaining * 100) / 100;
   }
 
   sortCategoryNames(): void {

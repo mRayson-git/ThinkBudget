@@ -5,7 +5,7 @@ import { AngularFirestore, AngularFirestoreCollection, AngularFirestoreDocument 
 import firebase from 'firebase/compat';
 import { OrderByDirection, Timestamp, WriteBatch } from 'firebase/firestore';
 import { BehaviorSubject, combineLatest, Observable, Subject } from 'rxjs';
-import { switchMap } from 'rxjs/operators';
+import { switchMap, take } from 'rxjs/operators';
 import { Transaction } from '../interfaces/transaction';
 import { ToastService } from './toast.service';
 
@@ -56,6 +56,21 @@ export class TransactionService {
               transaction.id = res.id;
               this.transactionCollection.doc(res.id).set(transaction, { merge: true });
             });
+          } else if (transaction.transDate == mostRecent!.transDate) {
+            this.afs.collection<Transaction>(this.currentUser?.uid + '/resources/transactions', ref => ref
+            .where('bankAccountName', '==', transaction.bankAccountName)
+            .where('transAmount', '==', transaction.transAmount)
+            .where('transPayee', '==', transaction.transPayee)
+            .where('transType', '==', transaction.transType)
+            .limit(1)).valueChanges().pipe(take(1)).subscribe(trans => {
+              if (!trans) {
+                this.transactionCollection.add(transaction).then(res => {
+                  transaction.id = res.id;
+                  this.transactionCollection.doc(res.id).set(transaction, { merge: true });
+                });
+              }
+            });
+            
           } else {
             console.warn(transaction + " Requires manual addition");
           }

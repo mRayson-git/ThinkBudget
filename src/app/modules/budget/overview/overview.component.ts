@@ -17,7 +17,7 @@ import { Label } from 'ng2-charts';
 })
 export class OverviewComponent implements OnInit {
   public Math = Math;
-  totals: { parent: string, name: string, amount: number, remaining: number, percentage: number, colour: string }[] = [];
+  totals: { parent: string, name: string, budgetedAmount: number, amount: number, remaining: number, percentage: number, colour: string }[] = [];
   currDate!: Date;
   totalActualIncome!: number;
 
@@ -30,6 +30,9 @@ export class OverviewComponent implements OnInit {
     title: {
       display: true,
       text: 'Remaining Budget by Category'
+    },
+    legend: {
+      position: 'right'
     }
   };
   barChartLabels: Label[] = ['Budget'];
@@ -63,7 +66,7 @@ export class OverviewComponent implements OnInit {
 
   getCategoryTotals(budget: MonthlyBudget, transactions: Transaction[]): void {
     
-    let totals: { parent: string, name: string, amount: number, remaining: number, percentage: number, colour: string }[] = [];
+    let totals: { parent: string, name: string, budgetedAmount: number, amount: number, remaining: number, percentage: number, colour: string }[] = [];
     // let untrackedTotals: { category: string, amount: number, remaining: number, percentage: number }[] = [];
     budget.categories.forEach(category => {
       let total = 0;
@@ -77,11 +80,10 @@ export class OverviewComponent implements OnInit {
           percentage = Math.round(total / category.amount * 100);
           remaining = remaining + transaction.transAmount;
         } else if (transaction.transCategory?.split(':')[0] == 'Income'){
-          console.log(transaction);
           this.totalActualIncome += transaction.transAmount;
         }
       });
-      totals.push({ parent: category.parent, name: category.name, amount: total, remaining: remaining, percentage: percentage, colour: category.colour });
+      totals.push({ parent: category.parent, name: category.name, budgetedAmount: category.amount, amount: total, remaining: remaining, percentage: percentage, colour: category.colour });
     });
     this.totals = totals;
   }
@@ -91,7 +93,7 @@ export class OverviewComponent implements OnInit {
     this.totals.forEach(total => {
       totalSpent = totalSpent + total.amount;
     });
-    return totalSpent;
+    return Math.round(totalSpent * 100) / 100;
   }
 
   getTotalSaved(): number {
@@ -101,7 +103,7 @@ export class OverviewComponent implements OnInit {
         totalSaved = totalSaved + total.amount
       }
     });
-    return totalSaved;
+    return Math.round(totalSaved * 100) / 100;
   }
 
   getTotalBudgeted(): number {
@@ -109,7 +111,7 @@ export class OverviewComponent implements OnInit {
     this.budgetShown!.categories.forEach(category => {
       totalBudgeted += category.amount;
     });
-    return totalBudgeted;
+    return Math.round(totalBudgeted * 100) / 100;
   }
 
   getTotalSpendingBudgeted(): number {
@@ -119,7 +121,15 @@ export class OverviewComponent implements OnInit {
         totalBudgeted += category.amount;
       }
     });
-    return totalBudgeted;
+    return Math.round(totalBudgeted * 100) / 100;
+  }
+
+  getTotalOverSpentBudget(): number {
+    return Math.round((this.getTotalSpent() - this.getTotalBudgeted()) * 100) / 100;
+  }
+
+  getTotalOverSpentActual(): number {
+    return Math.round((this.getTotalSpent() - this.totalActualIncome) * 100) / 100;
   }
 
   getPrevMonth(): void {
@@ -128,7 +138,6 @@ export class OverviewComponent implements OnInit {
     this.bs.getMonthsBudget(this.currDate).pipe(take(1)).subscribe(budgets => {
       if (budgets.length > 0) {
         this.budgetShown = budgets[0];
-        console.log(this.budgetShown);
         this.budgetShownParents = this.bs.getParentCategories(this.budgetShown);
         this.transactionService.getMonthlyTransactions(this.currDate).pipe(take(1)).subscribe(transactions => {
           this.getCategoryTotals(this.budgetShown!, transactions);
@@ -167,7 +176,7 @@ export class OverviewComponent implements OnInit {
     // console.log(this.getTotalSaved());
     // console.log(this.getTotalSpendingBudgeted());
     // Calculating flex ((total spent - total saved) - totalSpending Budgeted - Extra Income not accounted for)
-    this.budgetShown!.budgetStats!.totalDifference = (this.getTotalSpent() - this.getTotalSaved()) - this.getTotalSpendingBudgeted() - (this.totalActualIncome - this.getTotalBudgeted());
+    this.budgetShown!.budgetStats!.totalDifference = this.getTotalOverSpentActual();
     this.bs.editBudget(this.budgetShown!);
   }
 
@@ -191,7 +200,7 @@ export class OverviewComponent implements OnInit {
       let data = [];
       let hidden = false;
       data.push(total.remaining);
-      if (total.parent == 'Saving'){
+      if (total.parent == 'Saving' || total.remaining == 0){
         hidden = true;
       } else { hidden = false;}
       this.barChartData.push({data: data, label: total.name, backgroundColor: total.colour, hoverBackgroundColor: total.colour, hoverBorderColor: '#000', hidden: hidden });
@@ -212,7 +221,7 @@ export class OverviewComponent implements OnInit {
       // }
       // prevValue = total.parent;
     });
-    this.barChartData.push({data: [this.getTotalBudgeted() - this.getTotalSpent()], label: 'Total Remaining', backgroundColor: '#3467eb', hidden: true})
+    this.barChartData.push({data: [this.getTotalOverSpentBudget() * -1], label: 'Total Remaining (Budgeted)', backgroundColor: '#3467eb', hidden: true})
     this.barChartData = this.barChartData.filter(data => data.data?.length != 0);
   }
 
