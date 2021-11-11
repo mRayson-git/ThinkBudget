@@ -1,9 +1,32 @@
-<div *ngIf="bs.currBudget; else noBudget">
-  <h1 class="display-5">{{currDate | date:'MMMM'}}'s Budget</h1>
-  <p class="fs-3 text-muted">Estimated income: {{bs.currBudget.income | currency}}</p>
+<div class="d-flex">
+  <button class="btn" (click)="getPrevMonth()">
+    <svg class="bi text-success " width="32" height="32" fill="currentColor">
+      <use xlink:href="assets/bootstrap-icons.svg#chevron-double-left" />
+    </svg>
+  </button>
+  <h1 class="display-5 align-self-end">{{currDate | date:'MMMM'}}'s Budget</h1>
+  <button class="btn" (click)="getFutureMonth()">
+    <svg class="bi text-success " width="32" height="32" fill="currentColor">
+      <use xlink:href="assets/bootstrap-icons.svg#chevron-double-right" />
+    </svg>
+  </button>
+</div>
+<div *ngIf="budgetShown; else noBudget">
+  <p class="fs-3 text-muted">Estimated income: {{budgetShown.income | currency}}</p>
+  <p class="fs-5 text-muted">Actual income so far: {{totalActualIncome | currency}}</p>
   <hr>
+  <div style="display: block;">
+    <canvas baseChart 
+      [datasets]="barChartData"
+      [labels]="barChartLabels"
+      [options]="barChartOptions"
+      [plugins]="barChartPlugins"
+      [legend]="barChartLegend"
+      [chartType]="barChartType">
+    </canvas>
+  </div>
   <div class="card card-body shadow">
-    <div *ngFor="let parent of bs.currParentCategories">
+    <div *ngFor="let parent of budgetShownParents">
       <h2 class="h5 pastel p-3 text-center">{{parent}}</h2>
       <div *ngFor="let total of totals">
         <p *ngIf="total.parent == parent">
@@ -23,8 +46,8 @@
       <p>Total saved so far: {{getTotalSaved() | currency}}</p>
       <p>Total spent so far: {{getTotalSpent() - getTotalSaved() | currency}}</p>
       <p>Total amount used: {{getTotalSpent() | currency}} 
-        <span *ngIf="getTotalSpent() > getTotalBudgeted(); else under" class="text-danger">over budget by {{getTotalSpent() - getTotalBudgeted() | currency}}</span>
-        <ng-template #under><span class="text-success">under budget by {{getTotalBudgeted() - getTotalSpent() | currency}}</span></ng-template>
+        <span *ngIf="getTotalSpent() > getTotalBudgeted(); else under" class="text-danger">over spent by {{this.getTotalSpent() - this.getTotalSaved() - this.getTotalSpendingBudgeted()| currency}}</span>
+        <ng-template #under><span class="text-success">under spent by {{getTotalBudgeted() - getTotalSpent() | currency}}</span></ng-template>
       </p>
     </div>
   </div>

@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { AngularFireAuth } from '@angular/fire/compat/auth';
 import { AngularFirestore, AngularFirestoreCollection } from '@angular/fire/compat/firestore';
-import { Timestamp } from 'firebase/firestore';
+import { orderBy, Timestamp } from 'firebase/firestore';
 import firebase from 'firebase/compat';
 import { Observable } from 'rxjs';
 import { MonthlyBudget } from '../interfaces/monthly-budget';
@@ -23,11 +23,12 @@ export class MonthlyBudgetService {
     "Food",
     "Housing",
     "Income",
-    "Insurance",
+    "Health",
     "Personal",
     "Saving",
     "Transportation",
-    "Utilities"
+    "Utilities",
+    "Flex"
   ]
   categoryNames: string[] = [
     "Food: Delivery",
@@ -40,9 +41,9 @@ export class MonthlyBudgetService {
     "Housing: Rent",
     "Income: Misc",
     "Income: Payroll",
-    "Insurance: Dental",
-    "Insurance: Health",
-    "Insurance: Optometry",
+    "Health: Dental",
+    "Health: Other",
+    "Health: Optometry",
     "Personal: Entertainment",
     "Personal: Gifts",
     "Personal: Health",
@@ -63,6 +64,7 @@ export class MonthlyBudgetService {
     "Utilities: Gas",
     "Utilities: Phone",
     "Utilities: Water",
+    "Flex: Misc"
   ]
 
   constructor(private afs: AngularFirestore,
@@ -72,12 +74,12 @@ export class MonthlyBudgetService {
   init(): void {
     this.auth.currentUser.then(user => {
       this.currentUser = user!;
-      this.budgetCollection = this.afs.collection<MonthlyBudget>(user?.uid + '/resources/monthlyBudgets');
+      this.budgetCollection = this.afs.collection<MonthlyBudget>(user?.uid + '/resources/monthlyBudgets', ref => ref.orderBy('date', 'desc'));
       this.budgets$ = this.budgetCollection.valueChanges();
-      this.getThisMonthsBudget().subscribe(budgets => {
+      this.getMonthsBudget(new Date()).subscribe(budgets => {
         if (budgets.length > 0) {
           this.currBudget = budgets[0];
-          this.getCurrParentCategories();
+          this.currParentCategories = this.getParentCategories(this.currBudget);
         } else {
           this.currBudget = undefined;
         }
@@ -100,14 +102,19 @@ export class MonthlyBudgetService {
 
   editBudget(budget: MonthlyBudget): void {
     this.budgetCollection.doc(budget.id).set(budget)
-      .then(res => this.ts.show({type: 'success', content: 'Budget properties updated'}))
+      .then(res => {
+        this.ts.show({type: 'success', content: 'Budget properties updated'});
+        // Update the current budget variable
+        // this.currBudget = budget;
+        // this.currParentCategories = this.getParentCategories(this.currBudget);
+      })
       .catch(err => this.ts.show({type: 'danger', content: 'Could not update budget'}));
   }
 
-  getThisMonthsBudget(): Observable<MonthlyBudget[]> {
-    let currDate = new Date();
+  getMonthsBudget(currDate: Date): Observable<MonthlyBudget[]> {
     return this.afs.collection<MonthlyBudget>(this.currentUser?.uid + '/resources/monthlyBudgets', ref => ref
-      .where('date', ">=", Timestamp.fromDate(new Date(currDate.getFullYear(), currDate.getMonth())))).valueChanges();
+      .where('date', ">=", Timestamp.fromDate(new Date(currDate.getFullYear(), currDate.getMonth())))
+      .where('date', '<', Timestamp.fromDate(new Date(currDate.getFullYear(), currDate.getMonth() + 1)))).valueChanges();
   }
 
   // Helper methods non-database
@@ -129,11 +136,11 @@ export class MonthlyBudgetService {
     return parent;
   }
 
-  getCurrParentCategories(): void {
-    let parent: string[] = [];
-    this.currBudget?.categories.forEach(category => {
-      if (!parent.find(parent => parent == category.parent)) { parent.push(category.parent); }
-    });
-    this.currParentCategories = parent;
-  }
+  // getCurrParentCategories(): void {
+  //   let parent: string[] = [];
+  //   this.currBudget?.categories.forEach(category => {
+  //     if (!parent.find(parent => parent == category.parent)) { parent.push(category.parent); }
+  //   });
+  //   this.currParentCategories = parent;
+  // }
 }

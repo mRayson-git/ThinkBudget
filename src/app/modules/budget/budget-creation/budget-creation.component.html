@@ -46,15 +46,22 @@
     <div class="col-sm-12 col-md-6">
         <div class="card card-body pastel shadow">
             <h1>Budget for {{currDate | date:'MMMM'}}</h1>
-            <p class="mb-0">Estimated total income: {{bs.currBudget!.income | currency}}</p>
+            <p class="mb-0">Estimated total income: {{budgetShown!.income | currency}}</p>
             <p class="my-0">Total Budgeted: {{ getTotalBudgeted() | currency }}</p>
-            <p class="mt-0">Remaining to Budget: {{ getRemainingToBudget() | currency }}</p>
+            <!-- UPDATE LATER -->
+            <div *ngIf="budgets && budgets.length > 1">
+              <p class="my-0" *ngIf="budgets[1]!.budgetStats!.totalDifference! > 0">Debt from last month: <span class="text-danger">{{ budgets[1]!.budgetStats!.totalDifference! | currency }}</span></p>
+              <p class="my-0" *ngIf="budgets[1]!.budgetStats!.totalDifference! < 0">Extra from last month: <span class="text-success">{{ budgets[1]!.budgetStats!.totalDifference! * -1 | currency }}</span></p>
+              <p class="mt-0" *ngIf="getRemainingToBudget() - budgets[1]!.budgetStats!.totalDifference! >= 0">Remaining to Budget: {{ getRemainingToBudget() - budgets[1]!.budgetStats!.totalDifference! | currency }}</p>
+              <p class="mt-0" *ngIf="getRemainingToBudget() - budgets[1]!.budgetStats!.totalDifference! < 0">Budgeted too much by: <span class="text-danger">{{ getRemainingToBudget() - budgets[1]!.budgetStats!.totalDifference! | currency }}</span></p>
+            </div>
+            
             <table class="table table-hover">
-              <tbody *ngFor="let parent of bs.currParentCategories" class="mb-0">
+              <tbody *ngFor="let parent of budgetShownParents" class="mb-0">
                 <tr>
                   <td colspan="3" class="table-success">{{parent}}</td>
                 </tr>
-                <tr *ngFor="let category of bs.currBudget!.categories" (click)="editCategory(category)">
+                <tr *ngFor="let category of budgetShown!.categories" (click)="editCategory(category)">
                   <td *ngIf="category.parent == parent">{{category.name}}</td>
                   <td *ngIf="category.parent == parent">{{category.amount | currency}}</td>
                   <td [style.background]="category.colour" *ngIf="category.parent == parent"></td>
@@ -62,7 +69,7 @@
               </tbody>
             </table>
             <div class="d-grid mt-3">
-              <button class="btn btn-danger" (click)="bs.removeBudget(bs.currBudget!.id!)">Delete Budget</button>
+              <button class="btn btn-danger" (click)="bs.removeBudget(budgetShown!.id!)">Delete Budget</button>
             </div>
         </div>
     </div>

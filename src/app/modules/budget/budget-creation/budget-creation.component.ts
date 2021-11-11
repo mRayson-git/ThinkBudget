@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { Timestamp } from 'firebase/firestore';
@@ -27,6 +27,9 @@ export class BudgetCreationComponent implements OnInit {
 
   currParentCategories: string[] = [];
 
+  budgetShown?: MonthlyBudget;
+  budgetShownParents?: string[];
+
   constructor(public bs: MonthlyBudgetService, private modalService: NgbModal) { }
 
   ngOnInit(): void {
@@ -34,7 +37,8 @@ export class BudgetCreationComponent implements OnInit {
       this.budgets = budgets;
     });
     if (this.bs.currBudget) {
-      this.getCategories(this.bs.currBudget);
+      this.budgetShown = this.bs.currBudget;
+      this.budgetShownParents = this.bs.getParentCategories(this.budgetShown);
       this.incomeForm.get('income')?.setValue(this.bs.currBudget.income);
     }
   }
@@ -48,12 +52,12 @@ export class BudgetCreationComponent implements OnInit {
     }
     this.bs.currBudget?.categories.push(category);
     // Add to the parent categories if not already there
-    if (!this.currParentCategories.find(parent => parent == category.parent)) {this.currParentCategories.push(category.parent);}
+    if (!this.budgetShownParents!.find(parent => parent == category.parent)) {this.budgetShownParents!.push(category.parent);}
     this.sortCategoryNames();
   }
 
   editIncome(): void {
-    this.bs.currBudget!.income = Number(this.incomeForm.get('income')?.value);
+    this.budgetShown!.income = Number(this.incomeForm.get('income')?.value);
   }
 
   editCategory(category: Category): void {
@@ -62,15 +66,14 @@ export class BudgetCreationComponent implements OnInit {
     modalRef.componentInstance.categoryEditEvent.subscribe((category: Category) => {
       console.log(category.parent);
       console.log(category.name);
-      let index = this.bs.currBudget!.categories.findIndex(element => element.parent == category.parent && element.name == category.name);
+      let index = this.budgetShown!.categories.findIndex(element => element.parent == category.parent && element.name == category.name);
       console.log(index);
-      this.bs.currBudget!.categories[index!] = category;
+      this.budgetShown!.categories[index!] = category;
     });
     modalRef.componentInstance.categoryRemoveEvent.subscribe((remove: Boolean) => {
       if (remove) {
-        this.bs.currBudget!.categories = this.bs.currBudget!.categories.filter(element => element != category);
-        // Check to make sure parent is not empty now
-        this.bs.getCurrParentCategories();
+        this.budgetShown!.categories = this.budgetShown!.categories.filter(element => element != category);
+        this.budgetShownParents = this.bs.getParentCategories(this.budgetShown!)
       }
     });
   }
@@ -99,17 +102,10 @@ export class BudgetCreationComponent implements OnInit {
   }
 
   commitChanges(): void {
-    this.bs.editBudget(this.bs.currBudget!);
+    this.bs.editBudget(this.budgetShown!);
   }
 
   // Helper methods
-  getCategories(budget: MonthlyBudget | undefined): void {
-    if (budget){
-      budget.categories.forEach(category => {
-        if (!this.currParentCategories.find(parent => parent == category.parent)) {this.currParentCategories.push(category.parent)}
-      });
-    }
-  }
 
   getTotalBudgeted(): number {
     let total = 0;
@@ -147,5 +143,9 @@ export class BudgetCreationComponent implements OnInit {
     }
     return color;
   }
+
+  // ngOnDestroy(): void {
+  //   this.bs.
+  // }
 
 }

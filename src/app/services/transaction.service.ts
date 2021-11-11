@@ -98,9 +98,9 @@ export class TransactionService {
       .limit(1));
   }
 
-  getMonthlyTransactions(): Observable<Transaction[]> {
-    let currDate = new Date();
+  getMonthlyTransactions(currDate: Date): Observable<Transaction[]> {
     return this.afs.collection<Transaction>(this.currentUser?.uid + '/resources/transactions', ref => ref
-      .where('transDate', ">=", Timestamp.fromDate(new Date(currDate.getFullYear(), currDate.getMonth())))).valueChanges();
+      .where('transDate', ">=", Timestamp.fromDate(new Date(currDate.getFullYear(), currDate.getMonth())))
+      .where('transDate', '<', Timestamp.fromDate(new Date(currDate.getFullYear(), currDate.getMonth() + 1)))).valueChanges();
   }
 }
