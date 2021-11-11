@@ -1,8 +1,7 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
-import { Budget } from 'src/app/interfaces/budget';
-import { BudgetService } from 'src/app/services/budget.service';
+import { Category } from 'src/app/interfaces/category';
 
 @Component({
   selector: 'app-budget-modal',
@@ -10,35 +9,34 @@ import { BudgetService } from 'src/app/services/budget.service';
   styleUrls: ['./budget-modal.component.scss']
 })
 export class BudgetModalComponent implements OnInit {
-  @Input() budget!: Budget;
-  budgetForm: FormGroup = new FormGroup({
-    tracked: new FormControl('', Validators.required),
-    categoryName: new FormControl('', Validators.required),
-    budgetAmount: new FormControl('', Validators.required),
-    budgetColour: new FormControl('', Validators.required)
+  @Input() category!: Category;
+  @Output() categoryEditEvent = new EventEmitter<Category>();
+  @Output() categoryRemoveEvent = new EventEmitter<Boolean>();
+
+  categoryForm: FormGroup = new FormGroup({
+    parent: new FormControl(''),
+    name: new FormControl('', Validators.required),
+    amount: new FormControl('', Validators.required),
+    colour: new FormControl('', Validators.required)
   });
 
-  constructor(private budgetService: BudgetService, private modalService: NgbModal) { }
+  constructor(private modalService: NgbModal) { }
 
   ngOnInit(): void {
-    this.budgetForm.get('tracked')?.setValue(this.budget.tracked);
-    this.budgetForm.get('categoryName')?.setValue(this.budget.categoryName);
-    this.budgetForm.get('budgetAmount')?.setValue(this.budget.budgetAmount);
-    this.budgetForm.get('budgetColour')?.setValue(this.budget.budgetColour);
+    this.categoryForm.get('parent')?.setValue(this.category.parent);
+    this.categoryForm.get('name')?.setValue(this.category.name);
+    this.categoryForm.get('amount')?.setValue(this.category.amount);
+    this.categoryForm.get('colour')?.setValue(this.category.colour);
   }
 
-  updateBudget(): void {
-    let updatedBudget: Budget = this.budgetForm.value;
-    updatedBudget.id = this.budget.id;
-    let toBeSplit: string = this.budgetForm.get('categoryName')!.value;
-    updatedBudget.category = toBeSplit.split(': ')[0];
-    updatedBudget.categoryName = toBeSplit.split(': ')[1];
-    this.budgetService.updateBudget(updatedBudget);
+  updateCategory(): void {
+    this.category = this.categoryForm.value;
+    this.categoryEditEvent.emit(this.category);
     this.modalService.dismissAll();
   }
 
-  removeBudget(): void {
-    this.budgetService.deleteBudget(this.budget.id!);
+  removeCategory(): void {
+    this.categoryRemoveEvent.emit(true);
     this.modalService.dismissAll();
   }
 

@@ -2,8 +2,8 @@ import { Component, OnInit } from '@angular/core';
 import { AngularFireAuth } from '@angular/fire/compat/auth';
 import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
-import { BudgetService } from 'src/app/services/budget.service';
 import { CsvProfileService } from 'src/app/services/csv-profile.service';
+import { MonthlyBudgetService } from 'src/app/services/monthly-budget.service';
 import { SuggestionService } from 'src/app/services/suggestion.service';
 import { ToastService } from 'src/app/services/toast.service';
 import { TransactionService } from 'src/app/services/transaction.service';
@@ -22,9 +22,9 @@ export class LoginComponent implements OnInit {
     private toastService: ToastService,
     private router: Router,
     private ts: TransactionService,
-    private bs: BudgetService,
     private csvS: CsvProfileService,
-    private ss: SuggestionService) { }
+    private ss: SuggestionService,
+    private bs: MonthlyBudgetService) { }
 
   ngOnInit(): void {
   }
@@ -38,9 +38,9 @@ export class LoginComponent implements OnInit {
       console.log(result);
       this.toastService.show({ type: 'success', content: 'Logged in!' });
       this.ts.init();
-      this.bs.init();
       this.csvS.init();
       this.ss.init();
+      this.bs.init();
       this.router.navigate(['/']);
     }).catch(error => {
       this.loginForm.reset();

@@ -1,20 +1,15 @@
 <div class="container my-3">
-    <form [formGroup]="budgetForm" class="mt-3" (ngSubmit)="updateBudget()">
-        <div class="form-check mb-3">
-            <input class="form-check-input" type="checkbox" value="" id="tracked" formControlName="tracked">
-            <label class="form-check-label" for="tracked">
-                Tracked?
-            </label>
-        </div>
-        <label for="categoryName">Category Name</label>
-        <input type="text" name="categoryName" id="categoryName" formControlName="categoryName"  class="form-control" readonly>
-        <label for="budgetAmount">Budgeted Amount</label>
-        <input type="number" name="budgetAmount" id="budgetAmount" formControlName="budgetAmount" class="form-control">
-        <label for="budgetColour">Category Color</label>
-        <input type="color" name="budgetCOlour" id="budgetColour" formControlName="budgetColour" class="form-control form-control-lg" value="#42f5b6">
+    <form [formGroup]="categoryForm" class="mt-3" (ngSubmit)="updateCategory()">
+
+        <label for="name">Category Name</label>
+        <input type="text" name="name" id="name" formControlName="name"  class="form-control" readonly>
+        <label for="amount">Budgeted Amount</label>
+        <input type="number" name="amount" id="amount" formControlName="amount" class="form-control">
+        <label for="colour">Category Color</label>
+        <input type="color" name="colour" id="colour" formControlName="colour" class="form-control form-control-lg" value="#42f5b6">
         <div class="d-grid gap-2 mt-3">
-            <button type="submit" class="btn btn-success" [disabled]="budgetForm.invalid">Update</button>
-            <button type="button" class="btn btn-danger" (click)="removeBudget()">Remove</button>
+            <button type="submit" class="btn btn-success" [disabled]="categoryForm.invalid">Update</button>
+            <button type="button" class="btn btn-danger" (click)="removeCategory()">Remove</button>
         </div>
     </form>
 </div>

@@ -1,90 +1,89 @@
 <div class="card shadow-sm pastel">
-    <div class="card-body">
-        <h1 class="display-5">General Information</h1>
-        <div class="row">
-            <div class="col-sm-12 col-lg-4">
-                <form [formGroup]="accountForm" (ngSubmit)="updateAccount()">
-                    <label for="displayname">Username: </label>
-                    <input type="text" name="displayname" id="displayname" formControlName="displayname" class="form-control mb-3">
-                    <label for="email">Email: </label>
-                    <input type="text" name="email" id="email" formControlName="email" class="form-control mb-3">
-                    <div class="d-grid">
-                        <button class="btn btn-success" type="submit">Update Account Settings</button>
-                    </div>
-                </form>
-            </div>
-        </div>
+  <div class="card-body">
+    <h1 class="display-5">General Information</h1>
+    <div class="row">
+      <div class="col-sm-12 col-lg-4">
+        <form [formGroup]="accountForm" (ngSubmit)="updateAccount()">
+          <label for="displayname">Username: </label>
+          <input type="text" name="displayname" id="displayname" formControlName="displayname"
+            class="form-control mb-3">
+          <label for="email">Email: </label>
+          <input type="text" name="email" id="email" formControlName="email" class="form-control mb-3">
+          <div class="d-grid">
+            <button class="btn btn-success" type="submit">Update Account Settings</button>
+          </div>
+        </form>
+      </div>
     </div>
+  </div>
 </div>
 <div class="card shadow-sm mt-5 pastel">
-    <div class="card-body">
-        <div class="d-flex justify-content-between">
-            <h1 class="display-5">Banking Information</h1>
-            <button class="btn" (click)="bankInfo()">
-                <svg class="bi text-success" width="32" height="32" fill="currentColor">
-                    <use xlink:href="assets/bootstrap-icons.svg#info-circle" />
-                </svg>
-            </button>
-        </div>
-        <div class="row">
-            <div class="col-sm-12 col-md-6">
-                <div *ngIf="parsers.length != 0">
-                    <p class="mb-2">Your csv parsing profiles:</p>
-                    <div class="list-group">
-                        <button *ngFor="let parser of parsers" class="list-group-item list-group-item-action" (click)="openParserUpdateDialog(parser)">{{parser.accountName}}</button>
-                    </div>
-                </div>
-                <div class="d-grid mt-3">
-                    <button class="btn btn-success" (click)="openParserDialog()">
-                        <svg class="bi" width="16" height="16" fill="currentColor">
-                            <use xlink:href="assets/bootstrap-icons.svg#plus" />
-                        </svg>
-                        Add a new parsing profile
-                    </button>
-                </div>
-            </div>
-        </div>
+  <div class="card-body">
+    <div class="d-flex justify-content-between">
+      <h1 class="display-5">Banking Information</h1>
+      <button class="btn" (click)="bankInfo()">
+        <svg class="bi text-success" width="32" height="32" fill="currentColor">
+          <use xlink:href="assets/bootstrap-icons.svg#info-circle" />
+        </svg>
+      </button>
     </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <div *ngIf="parsers.length != 0">
+          <p class="mb-2">Your csv parsing profiles:</p>
+          <div class="list-group">
+            <button *ngFor="let parser of parsers" class="list-group-item list-group-item-action"
+              (click)="openParserUpdateDialog(parser)">{{parser.accountName}}</button>
+          </div>
+        </div>
+        <div class="d-grid mt-3">
+          <button class="btn btn-success" (click)="openParserDialog()">
+            <svg class="bi" width="16" height="16" fill="currentColor">
+              <use xlink:href="assets/bootstrap-icons.svg#plus" />
+            </svg>
+            Add a new parsing profile
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
 </div>
 <div class="card shadow-sm mt-5 pastel">
-    <div class="card-body">
-        <div class="d-flex justify-content-between">
-            <h1 class="display-5">Budget</h1>
-            <button class="btn" (click)="budgetInfo()">
-                <svg class="bi text-success" width="32" height="32" fill="currentColor">
-                    <use xlink:href="assets/bootstrap-icons.svg#info-circle" />
-                </svg>
-            </button>
-        </div>
-        <div *ngIf="budgets!.length != 0; else noBudget">
-            <div class="col-sm-12 col-md-6">
-                <p>This is your current buget:</p>
-                <table class="table table-hover">
-                    <thead>
-                        <tr>
-                            <td>Category</td>
-                            <td>Budget</td>
-                            <td>Colour</td>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr *ngFor="let budget of budgets" (click)="editBudget(budget)">
-                            <td *ngIf="budget.tracked">{{budget.categoryName}}</td>
-                            <td *ngIf="budget.tracked">{{budget.budgetAmount | currency}}</td>
-                            <td [style.background]="budget.budgetColour" *ngIf="budget.tracked"></td>
-                        </tr>
-                    </tbody>
-                </table>
-                <div class="d-grid">
-                    <button type="button" class="btn btn-success" routerLink="../budget-creator">Update Budget</button>
-                </div>
-                
-            </div>
-        </div>
-        <ng-template #noBudget>
-            <p>You dont seem to have a budget, create one here:</p>
-            <button class="btn btn-success" type="button" routerLink="../budget-creator">Create new budget</button>
-        </ng-template>
+  <div class="card-body">
+    <div class="d-flex justify-content-between">
+      <h1 class="display-5">Budget</h1>
+      <button class="btn" (click)="budgetInfo()">
+        <svg class="bi text-success" width="32" height="32" fill="currentColor">
+          <use xlink:href="assets/bootstrap-icons.svg#info-circle" />
+        </svg>
+      </button>
     </div>
+    <div class="col-sm-12 col-md-6">
+        <div *ngIf="bs.currBudget; else noBudget">
+            <p>This is your current buget: </p>
+            <p class="mb-0">Estimated total income: {{bs.currBudget?.income | currency}}</p>
+            <table class="table">
+                <tbody *ngFor="let parent of currParentCategories" class="mb-0">
+                <tr>
+                    <td colspan="3" class="table-success">{{parent}}</td>
+                </tr>
+                <tr *ngFor="let category of bs.currBudget?.categories">
+                    <td *ngIf="category.parent == parent">{{category.name}}</td>
+                    <td *ngIf="category.parent == parent">{{category.amount | currency}}</td>
+                    <td [style.background]="category.colour" *ngIf="category.parent == parent"></td>
+                </tr>
+                </tbody>
+            </table>
+        <div class="d-grid">
+          <button type="button" class="btn btn-success" routerLink="/budget-creation">Update Budget</button>
+        </div>
+      </div>
+      <ng-template #noBudget>
+        <p>You dont have a budget for this month, create one here:</p>
+        <div class="d-grid">
+          <button type="button" class="btn btn-success" routerLink="/budget-creation">Create Budget</button>
+        </div>
+      </ng-template>
+    </div>
+  </div>
 </div>
-

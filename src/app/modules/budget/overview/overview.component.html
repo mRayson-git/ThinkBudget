@@ -1,22 +1,59 @@
-<h1 class="display-5">{{currDate | date:'MMMM'}}'s Budget</h1>
-<hr>
-<div class="card card-body">
-  <div *ngFor="let category of categories">
-    <h2 class="h5 pastel p-3 text-center">{{category}}</h2>
-    <div *ngFor="let total of totals">
-      <p *ngIf="total.category == category">
-        {{total.categoryName}}: {{total.percentage}}% used
-        <ngb-progressbar type="danger" [value]="total.percentage" *ngIf="total.percentage >= 100">
-          {{total.amount | currency}}</ngb-progressbar>
-        <ngb-progressbar type="success" [value]="total.percentage" *ngIf="total.percentage < 100">
-          {{total.amount | currency}}</ngb-progressbar>
-      </p>
+<div class="d-flex">
+  <button class="btn" (click)="getPrevMonth()">
+    <svg class="bi text-success " width="32" height="32" fill="currentColor">
+      <use xlink:href="assets/bootstrap-icons.svg#chevron-double-left" />
+    </svg>
+  </button>
+  <h1 class="display-5 align-self-end">{{currDate | date:'MMMM'}}'s Budget</h1>
+  <button class="btn" (click)="getFutureMonth()">
+    <svg class="bi text-success " width="32" height="32" fill="currentColor">
+      <use xlink:href="assets/bootstrap-icons.svg#chevron-double-right" />
+    </svg>
+  </button>
+</div>
+<div *ngIf="budgetShown; else noBudget">
+  <p class="fs-3 text-muted">Estimated income: {{budgetShown.income | currency}}</p>
+  <p class="fs-5 text-muted">Actual income so far: {{totalActualIncome | currency}}</p>
+  <hr>
+  <div style="display: block;">
+    <canvas baseChart 
+      [datasets]="barChartData"
+      [labels]="barChartLabels"
+      [options]="barChartOptions"
+      [plugins]="barChartPlugins"
+      [legend]="barChartLegend"
+      [chartType]="barChartType">
+    </canvas>
+  </div>
+  <div class="card card-body shadow">
+    <div *ngFor="let parent of budgetShownParents">
+      <h2 class="h5 pastel p-3 text-center">{{parent}}</h2>
+      <div *ngFor="let total of totals">
+        <p *ngIf="total.parent == parent">
+          {{total.name}}: {{total.percentage}}% used (
+            <span *ngIf="total.remaining >= 0; else over" class="text-success">{{total.remaining | currency}} remaining of budgeted {{total.budgetedAmount | currency}}</span>
+            <ng-template #over><span class="text-danger">{{Math.abs(total.remaining) | currency}} over the budgeted amount of {{total.budgetedAmount | currency}}</span></ng-template>
+            )
+          <ngb-progressbar type="danger" [value]="total.percentage" *ngIf="total.percentage > 100" style="height: 20px;">
+            {{total.amount | currency}}</ngb-progressbar>
+          <ngb-progressbar type="success" [value]="total.percentage" *ngIf="total.percentage <= 100" style="height: 20px;">
+            {{total.amount | currency}}</ngb-progressbar>
+        </p>
+      </div>
+    </div>
+    <h2 class="h5 pastel p-3 text-center">Totals</h2>
+    <div class="text-center">
+      <p>Total spent (internal) so far: {{getTotalSaved() | currency}}</p>
+      <p>Total spent (external) so far: {{getTotalSpent() - getTotalSaved() | currency}}</p>
+      <p *ngIf="getTotalOverSpentBudget() > 0; else underBudget">Over spent budget by <span class="text-danger">{{getTotalOverSpentBudget() | currency}}</span></p>
+      <ng-template #underBudget><p>Under spent budget by <span class="text-success">{{getTotalOverSpentBudget() * -1 | currency}}</span></p></ng-template>
+      <p *ngIf="getTotalOverSpentActual() > 0; else underActual">Over spent actual income by <span class="text-danger">{{getTotalOverSpentActual() | currency}}</span></p>
+      <ng-template #underActual><p>Under spent actual income by <span class="text-success">{{getTotalOverSpentActual() * -1 | currency}}</span></p></ng-template> 
     </div>
   </div>
-  <h2 class="h5 pastel p-3 text-center">Totals</h2>
-  <div class="text-center">
-    <p>Total saved so far: {{getTotalSaved() | currency}}</p>
-    <p>Total spent so far: {{getTotalSpent() - getTotalSaved() | currency}}</p>
-    <p>Total budgeted amount used: {{getTotalSpent() | currency}}</p>
-  </div>
 </div>
+<ng-template #noBudget>
+  <div class="alert alert-warning">
+    <p>You don't have a budget setup for this month. Make one <a routerLink="/budget-creation">here</a>.</p>
+  </div>
+</ng-template>

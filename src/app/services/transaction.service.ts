@@ -5,7 +5,7 @@ import { AngularFirestore, AngularFirestoreCollection, AngularFirestoreDocument 
 import firebase from 'firebase/compat';
 import { OrderByDirection, Timestamp, WriteBatch } from 'firebase/firestore';
 import { BehaviorSubject, combineLatest, Observable, Subject } from 'rxjs';
-import { switchMap } from 'rxjs/operators';
+import { switchMap, take } from 'rxjs/operators';
 import { Transaction } from '../interfaces/transaction';
 import { ToastService } from './toast.service';
 
@@ -26,6 +26,18 @@ export class TransactionService {
 
   }
 
+  init(): void {
+    this.auth.currentUser.then(user => {
+      this.currentUser = user!;
+      this.limitFilter$ = new BehaviorSubject(5);
+      // Setup for transactions on transaction overview page
+      this.transactions$ = this.limitFilter$.pipe(
+        switchMap(limit => this.afs.collection<Transaction>(user?.uid + '/resources/transactions', ref => ref.orderBy('transDate', 'desc').limit(limit)).valueChanges()
+        ));
+      this.transactionCollection = this.afs.collection<Transaction>(user?.uid + '/resources/transactions');
+    });
+  }
+
   // Configure to use writeBatch and custom uuids
   batchSave(transactions: Transaction[]): void {
     this.getMostRecent(transactions[0].bankAccountName).get().subscribe(data => {
@@ -44,6 +56,21 @@ export class TransactionService {
               transaction.id = res.id;
               this.transactionCollection.doc(res.id).set(transaction, { merge: true });
             });
+          } else if (transaction.transDate == mostRecent!.transDate) {
+            this.afs.collection<Transaction>(this.currentUser?.uid + '/resources/transactions', ref => ref
+            .where('bankAccountName', '==', transaction.bankAccountName)
+            .where('transAmount', '==', transaction.transAmount)
+            .where('transPayee', '==', transaction.transPayee)
+            .where('transType', '==', transaction.transType)
+            .limit(1)).valueChanges().pipe(take(1)).subscribe(trans => {
+              if (!trans) {
+                this.transactionCollection.add(transaction).then(res => {
+                  transaction.id = res.id;
+                  this.transactionCollection.doc(res.id).set(transaction, { merge: true });
+                });
+              }
+            });
+            
           } else {
             console.warn(transaction + " Requires manual addition");
           }
@@ -79,18 +106,6 @@ export class TransactionService {
     this.limitFilter$?.next(limit);
   }
 
-  init(): void {
-    this.auth.currentUser.then(user => {
-      this.currentUser = user!;
-      this.limitFilter$ = new BehaviorSubject(5);
-      // Setup for transactions on transaction overview page
-      this.transactions$ = this.limitFilter$.pipe(
-        switchMap(limit => this.afs.collection<Transaction>(user?.uid + '/resources/transactions', ref => ref.orderBy('transDate', 'desc').limit(limit)).valueChanges()
-        ));
-      this.transactionCollection = this.afs.collection<Transaction>(user?.uid + '/resources/transactions');
-    });
-  }
-
   getMostRecent(bankAccountName: string): AngularFirestoreCollection<Transaction> {
     return this.afs.collection<Transaction>(this.currentUser?.uid + '/resources/transactions', ref => ref
       .where('bankAccountName', '==', bankAccountName)
@@ -98,9 +113,9 @@ export class TransactionService {
       .limit(1));
   }
 
-  getMonthlyTransactions(): Observable<Transaction[]> {
-    let currDate = new Date();
+  getMonthlyTransactions(currDate: Date): Observable<Transaction[]> {
     return this.afs.collection<Transaction>(this.currentUser?.uid + '/resources/transactions', ref => ref
-      .where('transDate', ">=", Timestamp.fromDate(new Date(currDate.getFullYear(), currDate.getMonth())))).valueChanges();
+      .where('transDate', ">=", Timestamp.fromDate(new Date(currDate.getFullYear(), currDate.getMonth())))
+      .where('transDate', '<', Timestamp.fromDate(new Date(currDate.getFullYear(), currDate.getMonth() + 1)))).valueChanges();
   }
 }
