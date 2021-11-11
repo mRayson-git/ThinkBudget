@@ -87,7 +87,7 @@ export class OverviewComponent implements OnInit {
         if (transaction.transCategory == fullName) {
           total = total - transaction.transAmount;
           percentage = Math.round(total / category.amount * 100);
-          remaining = remaining + transaction.transAmount;
+          remaining = Math.round((remaining + transaction.transAmount) * 100) / 100;
         } else if (transaction.transCategory?.split(':')[0] == 'Income'){
           this.totalActualIncome += transaction.transAmount;
         }
@@ -212,7 +212,7 @@ export class OverviewComponent implements OnInit {
       if (total.parent == 'Saving' || total.remaining == 0){
         hidden = true;
       } else { hidden = false;}
-      this.barChartData.push({data: data, label: total.name, backgroundColor: total.colour, hoverBackgroundColor: total.colour, hoverBorderColor: '#000', hidden: hidden });
+      this.barChartData.push({data: data, label: total.name, backgroundColor: this.bs.colourAdjust(total.colour, 10), hoverBackgroundColor: this.bs.colourAdjust(total.colour, 10), borderColor: total.colour , hidden: hidden });
       // // if on first index, set prev value to the first parent category
       // if (index == 0) {
       //   prevValue = total.parent;
@@ -230,7 +230,7 @@ export class OverviewComponent implements OnInit {
       // }
       // prevValue = total.parent;
     });
-    this.barChartData.push({data: [this.getTotalOverSpentBudget() * -1], label: 'Total Remaining (Budgeted)', backgroundColor: '#3467eb', hidden: true})
+    this.barChartData.push({data: [this.getTotalOverSpentBudget() * -1], label: 'Total Remaining (Budgeted)', backgroundColor: this.bs.colourAdjust('#3467eb', 10), hoverBackgroundColor: this.bs.colourAdjust('#3467eb', 10), borderColor: '#3467eb', hidden: true})
     this.barChartData = this.barChartData.filter(data => data.data?.length != 0);
   }
 
